@@ -1,30 +1,71 @@
 <script lang="ts" setup>
-import HelloWorld from '@/components/HelloWorld.vue'
+import { ref } from 'vue'
+import { Search } from '@element-plus/icons-vue'
+import { debounce } from 'lodash-es'
+import { searchWord } from '@/utils/api'
+
+const keyword = ref('')
+const search = debounce(doSearch, 500)
+
+function doSearch() {
+  const content = keyword.value.trim()
+  if (!content)
+    return
+  searchWord(content)
+    .then(console.log)
+    // .then(generateWordList)
+    .catch((e) => {
+      console.error(e)
+      // generateErrorTips($('#searchTable > tbody'));
+    })
+}
 </script>
 
 <template>
   <div class="container popup-body">
     <div class="input-group mb-3">
-      <input id="searchInput" type="text" class="form-control" tabindex="0" placeholder="请输入要查询的中文或英文">
-      <span id="searchButton" class="input-group-text">
-        <img src="./assets/images/svgs/search.svg">
-      </span>
+      <el-input
+        v-model="keyword"
+        style="height: 38px;"
+        placeholder="请输入要查询的中文或英文"
+        @keydown.enter="search"
+      >
+        <template #append>
+          <el-button :icon="Search" style="width: 42px;" @click="search" />
+        </template>
+      </el-input>
     </div>
+    <!-- 搜索结果 -->
+    <table id="searchTable" class="table table-hover">
+      <tbody />
+    </table>
+    <!-- 单词详情 -->
+    <div id="detailDiv" style="display: none;" />
   </div>
-  <HelloWorld msg="WXT + Vue" />
 </template>
 
-<style scoped>
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
+<style scoped lang="scss">
+.popup-body {
+  min-width: 400px;
+  scroll-behavior: auto;
+  margin-top: 20px;
 }
-.logo:hover {
-  filter: drop-shadow(0 0 2em #54bc4ae0);
+.container {
+  width: 100%;
+  box-sizing: border-box;
+  padding-right: 15px;
+  padding-left: 15px;
+  margin-right: auto;
+  margin-left: auto;
 }
-.logo.vue:hover {
-  filter: drop-shadow(0 0 2em #42b883aa);
+.mb-3 {
+  margin-bottom: 1rem !important;
+}
+.input-group {
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: stretch;
+  width: 100%;
 }
 </style>
