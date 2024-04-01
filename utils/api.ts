@@ -1,4 +1,6 @@
+import type { Dict } from './models'
 import storageModule from './storage'
+import WordbookStorage from './wordbook-storage'
 
 const defaultHost = '110.42.229.221'
 const defaultPort = 8080
@@ -40,4 +42,31 @@ export function searchWord(word: string) {
       headers: { access_token: accessToken },
     })
   })
+}
+
+export function getWordDetail(topicId: number) {
+  return loadRequestOptions().then(([host, port, accessToken]) => {
+    const url = `http://${host}:${port}/word/${topicId}`
+
+    return sendRequest({
+      url,
+      method: 'GET',
+      headers: { access_token: accessToken },
+    })
+  })
+    .then(fillCollectedField)
+    // .then(console.log)
+}
+async function fillCollectedField(res: unknown) {
+  const data = res as Dict
+  const topicId = data.dict.word_basic_info.topic_id
+  const bookId = await getWordbookId()
+  const collected = await WordbookStorage.contains(bookId, topicId)
+
+  data.dict.word_basic_info.__collected__ = collected
+
+  return data
+}
+function getWordbookId() {
+  return storageModule.get('bookId').then(bookId => bookId || 0)
 }
