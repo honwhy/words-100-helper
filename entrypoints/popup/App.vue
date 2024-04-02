@@ -2,8 +2,8 @@
 import { provide, ref } from 'vue'
 import { Search } from '@element-plus/icons-vue'
 import { debounce } from 'lodash-es'
-import WordDetail from './WordDetail.vue'
-import type { Dict, Word } from '@/utils/models'
+import WordDetailComp from './WordDetail.vue'
+import type { Word, WordDetail } from '@/utils/models'
 import { getWordDetail, searchWord } from '@/utils/api'
 
 const keyword = ref('')
@@ -12,7 +12,7 @@ const search = debounce(doSearch, 500)
 const showDataList = ref(false)
 const showDataDetail = ref(false)
 const dataList = ref<Word[]>([])
-const dataDetail = ref<Dict>()
+const dataDetail = ref<WordDetail>()
 function doSearch() {
   const content = keyword.value.trim()
   if (!content)
@@ -87,7 +87,7 @@ provide('refreshWordDetail', refreshWordDetail)
       </tbody>
     </table>
     <!-- 单词详情 -->
-    <WordDetail v-if="showDataDetail" :data="dataDetail" />
+    <WordDetailComp v-if="showDataDetail" :data="dataDetail" />
   </div>
 </template>
 
