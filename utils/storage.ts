@@ -13,7 +13,6 @@ function getSingle(key: string) {
 
 function getMulit(keys: string[]) {
   const completeKeys = keys.map(key => `local:${namespace}.${key}`)
-
   return storage.getItems(completeKeys)
 }
 

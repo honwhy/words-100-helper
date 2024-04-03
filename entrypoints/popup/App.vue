@@ -38,7 +38,7 @@ function refreshWordDetail(topicId: number) {
   getWordDetail(topicId)
     .then((data) => {
       console.log(data)
-      dataDetail.value = data
+      dataDetail.value = data as WordDetail
       showDataList.value = false
       showDataDetail.value = true
       // generateWordDetail(data, $('#detailDiv'), data.dict.word_basic_info.__collected__)
@@ -87,7 +87,7 @@ provide('refreshWordDetail', refreshWordDetail)
       </tbody>
     </table>
     <!-- 单词详情 -->
-    <WordDetailComp v-if="showDataDetail" :data="dataDetail" />
+    <WordDetailComp v-if="showDataDetail && dataDetail" :data="dataDetail" />
   </div>
 </template>
 

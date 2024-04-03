@@ -1,4 +1,4 @@
-import type { Dict } from './models'
+import type { WordDetail } from './models'
 import storageModule from './storage'
 import WordbookStorage from './wordbook-storage'
 
@@ -54,16 +54,16 @@ export function getWordDetail(topicId: number) {
       headers: { access_token: accessToken },
     })
   })
-    .then(fillCollectedField)
+    // .then(fillCollectedField)
     // .then(console.log)
 }
 async function fillCollectedField(res: unknown) {
-  const data = res as Dict
+  const data = res as WordDetail
   const topicId = data.dict.word_basic_info.topic_id
-  const bookId = await getWordbookId()
+  const bookId = (await getWordbookId()) as number
   const collected = await WordbookStorage.contains(bookId, topicId)
 
-  data.dict.word_basic_info.__collected__ = collected
+  data.dict.word_basic_info.__collected__ = collected as boolean
 
   return data
 }

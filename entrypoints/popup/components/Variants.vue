@@ -21,7 +21,7 @@ defineProps<{
     <VariantWord v-show="data.est" title="现在分词" :word="data.est" :topic-id="data.est_topic_id" />
     <VariantWord v-show="data.done" title="过去分词" :word="data.done" :topic-id="data.done_topic_id" />
     <VariantWord v-show="data.past" title="过去式" :word="data.past" :topic-id="data.past_topic_id" />
-    <VariantWord v-show="data.third" title="第三人称单数" :word="data.third" :topic-id="data.thrid_topic_id" />
+    <VariantWord v-show="data.third" title="第三人称单数" :word="data.third" :topic-id="data.third_topic_id" />
     <VariantWord v-show="data.er" title="比较级" :word="data.er" :topic-id="data.er_topic_id" />
   </div>
 </template>

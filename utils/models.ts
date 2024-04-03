@@ -7,7 +7,7 @@ export interface Word {
 interface WordBasicInfo {
   word: string
   topic_id: number
-  __collected__: boolean
+  __collected__?: boolean
 }
 export interface VariantInfo {
   noun: string

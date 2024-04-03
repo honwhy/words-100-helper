@@ -10,7 +10,8 @@ interface Props {
   word: string
   topicId: number
 }
-const refreshWordDetail = inject('refreshWordDetail')
+type Fn = (topicId: number) => void
+const refreshWordDetail = inject('refreshWordDetail') as Fn
 </script>
 
 <template>

@@ -13,27 +13,27 @@ import { storage } from 'wxt/storage'
 
 const KEY_PREFIX = 'baicizhan-helper.wordbook'
 
-const load = function (bookId: string) {
+const load = function (bookId: number) {
   return loadWordbook(bookId)
 }
 
-function loadWordbook(bookId: string) {
+function loadWordbook(bookId: number) {
   const key = `local:${KEY_PREFIX}${bookId}`
 
   return storage.getItems([key])
 }
 
-const save = function (bookId: string, data: any) {
+const save = function (bookId: number, data: any) {
   return saveWordbook(bookId, data)
 }
 
-function saveWordbook(bookId: string, data: any) {
+function saveWordbook(bookId: number, data: any) {
   const key = `local:${KEY_PREFIX}${bookId}`
 
   return storage.setItem(key, data)
 }
 
-const add = function (bookId: string, word: any) {
+const add = function (bookId: number, word: any) {
   if (!word)
     return
 
@@ -54,7 +54,7 @@ const add = function (bookId: string, word: any) {
   })
 }
 
-const remove = function (bookId: string, topicId: number) {
+const remove = function (bookId: number, topicId: number) {
   if (!topicId)
     return
 
@@ -69,7 +69,7 @@ const remove = function (bookId: string, topicId: number) {
   })
 }
 
-const contains = function (bookId: string, topicId: number) {
+const contains = function (bookId: number, topicId: number) {
   return new Promise((resolve) => {
     load(bookId)
       .then((wordbook) => {
