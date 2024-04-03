@@ -7,6 +7,10 @@ export interface Word {
 interface WordBasicInfo {
   word: string
   topic_id: number
+  accent_uk: string
+  accent_uk_audio_uri: string
+  accent_usa: string
+  accent_usa_audio_uri: string
   __collected__?: boolean
 }
 export interface VariantInfo {
