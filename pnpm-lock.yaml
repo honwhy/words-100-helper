@@ -11,9 +11,15 @@ dependencies:
   element-plus:
     specifier: ^2.6.2
     version: 2.6.2(vue@3.4.21)
+  js-levenshtein-esm:
+    specifier: ^1.2.0
+    version: 1.2.0
   lodash-es:
     specifier: ^4.17.21
     version: 4.17.21
+  stemmer:
+    specifier: ^2.0.1
+    version: 2.0.1
   vue:
     specifier: ^3.4.0
     version: 3.4.21(typescript@5.4.3)
@@ -3704,6 +3710,10 @@ packages:
     hasBin: true
     dev: true
 
+  /js-levenshtein-esm@1.2.0:
+    resolution: {integrity: sha512-fzreKVq1eD7eGcQr7MtRpQH94f8gIfhdrc7yeih38xh684TNMK9v5aAu2wxfIRMk/GpAJRrzcirMAPIaSDaByQ==}
+    dev: false
+
   /js-tokens@4.0.0:
     resolution: {integrity: sha512-RdJUflcE3cUzKiMqQgsCu06FPu9UdIJO0beYbPhHN4k6apgJtifcoCtT9bcxOpYBtpD2kCM6Sbzg4CausW/PKQ==}
     dev: true
@@ -5073,6 +5083,11 @@ packages:
     dependencies:
       bl: 5.1.0
     dev: true
+
+  /stemmer@2.0.1:
+    resolution: {integrity: sha512-bkWvSX2JR4nSZFfs113kd4C6X13bBBrg4fBKv2pVdzpdQI2LA5pZcWzTFNdkYsiUNl13E4EzymSRjZ0D55jBYg==}
+    hasBin: true
+    dev: false
 
   /string-width@4.2.3:
     resolution: {integrity: sha512-wKyQRQpjJ0sIp62ErSZdGsjMJWsap5oRNihHhu6G7JVO/9jIB6UyevL+tXuOqrng8j/cxKTWyWUwvSTriiZz/g==}

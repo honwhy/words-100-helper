@@ -53,10 +53,29 @@ interface ChnMean {
   setTopic_id: boolean
   topic_id: number
 }
+export interface Sentence {
+  audio_uri: string
+  chn_mean_id: number
+  highlight_phrase: string
+  id: number
+  img_uri: string
+  sentence: string
+  sentence_trans: string
+  setAudio_uri: boolean
+  setChn_mean_id: boolean
+  setHighlight_phrase: boolean
+  setId: boolean
+  setImg_uri: boolean
+  setSentence: boolean
+  setSentence_trans: boolean
+  setTopic_id: boolean
+  topic_id: number
+}
 export interface Dict {
   word_basic_info: WordBasicInfo
   variant_info: VariantInfo
   chn_means: ChnMean[]
+  sentences: Sentence[]
 }
 export interface WordDetail {
   dict: Dict

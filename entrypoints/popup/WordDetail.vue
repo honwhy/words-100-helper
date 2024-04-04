@@ -2,6 +2,7 @@
 import { computed, ref } from 'vue'
 import { isNil } from 'lodash-es'
 import Variants from './components/Variants.vue'
+import Sentences from './components/Sentences.vue'
 import type { WordDetail } from '@/utils/models'
 import starFill from '/svgs/star-fill.svg'
 import star from '/svgs/star.svg'
@@ -78,6 +79,7 @@ const chineseMeans = computed(() => {
       </table>
     </div>
     <Variants :data="data.dict.variant_info" />
+    <Sentences :data="data.dict.sentences" :word="basicInfo.word" />
   </div>
 </template>
 
