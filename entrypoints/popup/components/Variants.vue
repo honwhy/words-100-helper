@@ -27,9 +27,4 @@ defineProps<{
 </template>
 
 <style lang="scss" scoped>
-a {
-  color: #007bff;
-  text-decoration: none;
-  background-color: transparent;
-}
 </style>

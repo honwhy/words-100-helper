@@ -3,11 +3,14 @@ import { computed, ref } from 'vue'
 import { isNil } from 'lodash-es'
 import Variants from './components/Variants.vue'
 import Sentences from './components/Sentences.vue'
-import type { WordDetail } from '@/utils/models'
 import starFill from '/svgs/star-fill.svg'
 import star from '/svgs/star.svg'
 import volumeup from '/svgs/volume-up.svg'
 import ShortPhrases from './components/ShortPhrases.vue'
+import Synonyms from './components/Synonyms.vue'
+import Antonyms from './components/Antonyms.vue'
+import SimilarWords from './components/SimilarWords.vue'
+import type { WordDetail } from '@/utils/models'
 
 defineOptions({ name: 'WordDetail' })
 const props = withDefaults(defineProps<Props>(), {
@@ -82,6 +85,9 @@ const chineseMeans = computed(() => {
     <Variants :data="data.dict.variant_info" />
     <Sentences :data="data.dict.sentences" :word="basicInfo.word" />
     <ShortPhrases :data="data.dict.short_phrases" />
+    <Synonyms :data="data.dict.synonyms" />
+    <Antonyms :data="data.dict.antonyms" />
+    <SimilarWords :data="data.similar_words" />
   </div>
 </template>
 

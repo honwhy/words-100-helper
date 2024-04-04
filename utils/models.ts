@@ -85,13 +85,48 @@ export interface ShortPhrase {
   short_phrase_trans: string
   topic_id: number
 }
+export interface Synonym {
+  chn_mean_id: number
+  setChn_mean_id: boolean
+  setSyn_ant: boolean
+  setSyn_ant_id: boolean
+  setSyn_ant_topic_id: boolean
+  setTopic_id: boolean
+  syn_ant: string
+  syn_ant_id: number
+  syn_ant_topic_id: number
+  topic_id: number
+}
+export interface Antonym {
+  chn_mean_id: number
+  setChn_mean_id: boolean
+  setSyn_ant: boolean
+  setSyn_ant_id: boolean
+  setSyn_ant_topic_id: boolean
+  setTopic_id: boolean
+  syn_ant: string
+  syn_ant_id: number
+  syn_ant_topic_id: number
+  topic_id: number
+}
 export interface Dict {
   word_basic_info: WordBasicInfo
   variant_info: VariantInfo
   chn_means: ChnMean[]
   sentences: Sentence[]
   short_phrases: ShortPhrase[]
+  synonyms: Synonym[]
+  antonyms: Antonym[]
+}
+export interface SimilarWord {
+  setTopic_id: boolean
+  setWord: boolean
+  setWord_level_id: boolean
+  topic_id: number
+  word: string
+  word_level_id: number
 }
 export interface WordDetail {
   dict: Dict
+  similar_words: SimilarWord[]
 }
