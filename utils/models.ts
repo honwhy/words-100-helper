@@ -71,11 +71,26 @@ export interface Sentence {
   setTopic_id: boolean
   topic_id: number
 }
+export interface ShortPhrase {
+  chn_mean_id: number
+  id: number
+  setChn_mean_id: boolean
+  setId: boolean
+  setShort_phrase: boolean
+  setShort_phrase_topic_id: boolean
+  setShort_phrase_trans: boolean
+  setTopic_id: boolean
+  short_phrase: string
+  short_phrase_topic_id: number
+  short_phrase_trans: string
+  topic_id: number
+}
 export interface Dict {
   word_basic_info: WordBasicInfo
   variant_info: VariantInfo
   chn_means: ChnMean[]
   sentences: Sentence[]
+  short_phrases: ShortPhrase[]
 }
 export interface WordDetail {
   dict: Dict

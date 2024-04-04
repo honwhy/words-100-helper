@@ -6,11 +6,13 @@ import levenshtein from 'js-levenshtein-esm'
 import { stemmer } from 'stemmer'
 import type { Sentence } from '@/utils/models'
 
+defineOptions({ name: 'Sentences' })
+
+const props = defineProps<Props>()
 interface Props {
   word: string
   data: Sentence[]
 }
-const props = defineProps<Props>()
 const resourceDomain = 'https://7n.bczcdn.com'
 const index = ref(0)
 const sentence = computed(() => {

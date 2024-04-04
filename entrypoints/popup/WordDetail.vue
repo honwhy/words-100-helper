@@ -7,6 +7,7 @@ import type { WordDetail } from '@/utils/models'
 import starFill from '/svgs/star-fill.svg'
 import star from '/svgs/star.svg'
 import volumeup from '/svgs/volume-up.svg'
+import ShortPhrases from './components/ShortPhrases.vue'
 
 defineOptions({ name: 'WordDetail' })
 const props = withDefaults(defineProps<Props>(), {
@@ -80,6 +81,7 @@ const chineseMeans = computed(() => {
     </div>
     <Variants :data="data.dict.variant_info" />
     <Sentences :data="data.dict.sentences" :word="basicInfo.word" />
+    <ShortPhrases :data="data.dict.short_phrases" />
   </div>
 </template>
 
