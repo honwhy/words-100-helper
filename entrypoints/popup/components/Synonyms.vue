@@ -23,3 +23,9 @@ defineProps<Props>()
     </p>
   </div>
 </template>
+
+<style lang="scss" scoped>
+div {
+  display: block;
+}
+</style>
