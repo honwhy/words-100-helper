@@ -86,12 +86,6 @@ const chineseMeans = computed(() => {
 </template>
 
 <style scoped lang="scss">
-.section {
-  max-width: 450px;
-  margin-bottom: 1rem;
-  border: 0;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-}
 .word {
   font-size: x-large;
   font-weight: bolder;
@@ -128,8 +122,5 @@ const chineseMeans = computed(() => {
   table-layout: auto;
   border-collapse: separate;
   border-spacing: 0 8px;
-}
-.bg-primary {
-  background-color: #007bff !important;
 }
 </style>

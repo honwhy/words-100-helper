@@ -25,16 +25,6 @@ interface Props {
 </template>
 
 <style scoped lang="scss">
-.section {
-  max-width: 450px;
-  margin-bottom: 1rem;
-  border: 0;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-}
-.section-title {
-  font-weight: bolder;
-  margin-bottom: 8px;
-}
 ol,
 ul,
 dl {
