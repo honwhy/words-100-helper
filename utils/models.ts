@@ -109,6 +109,24 @@ export interface Antonym {
   syn_ant_topic_id: number
   topic_id: number
 }
+export interface EnglishMean {
+  accent_uk: string
+  accent_uk_audio_uri: string
+  accent_usa: string
+  accent_usa_audio_uri: string
+  id: number
+  mean: string
+  mean_type: string
+  setAccent_uk: boolean
+  setAccent_uk_audio_uri: boolean
+  setAccent_usa: boolean
+  setAccent_usa_audio_uri: boolean
+  setId: boolean
+  setMean: boolean
+  setMean_type: boolean
+  setTopic_id: boolean
+  topic_id: number
+}
 export interface Dict {
   word_basic_info: WordBasicInfo
   variant_info: VariantInfo
@@ -117,6 +135,7 @@ export interface Dict {
   short_phrases: ShortPhrase[]
   synonyms: Synonym[]
   antonyms: Antonym[]
+  en_means: EnglishMean[]
 }
 export interface SimilarWord {
   setTopic_id: boolean
