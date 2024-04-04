@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { computed, ref } from 'vue'
+import { isNil } from 'lodash-es'
 import Variants from './components/Variants.vue'
 import type { WordDetail } from '@/utils/models'
 import starFill from '/svgs/star-fill.svg'
@@ -12,7 +13,7 @@ const props = withDefaults(defineProps<Props>(), {
 })
 interface Props {
   data: WordDetail
-  showIcon: boolean
+  showIcon?: boolean
 }
 const basicInfo = computed(() => {
   return props.data.dict.word_basic_info
@@ -30,6 +31,17 @@ function playUk() {
 function playUsa() {
   accentUsaAudio.value!.play()
 }
+const chineseMeans = computed(() => {
+  const dataMap: Record<string, string[]> = {}
+  props.data.dict.chn_means.forEach((it) => {
+    let array = dataMap[it.mean_type]
+    if (isNil(array))
+      array = []
+    array.push(it.mean)
+    dataMap[it.mean_type] = array
+  })
+  return dataMap
+})
 </script>
 
 <template>
@@ -58,6 +70,12 @@ function playUsa() {
           <source :src="resourceDomain + basicInfo.accent_usa_audio_uri">
         </audio>
       </template>
+      <table class="means-table">
+        <tr v-for="(v, k) in chineseMeans" :key="k">
+          <td><span class="badge bg-primary" style="color: white;">{{ k }}</span></td>
+          <td>{{ v.join(';') }}</td>
+        </tr>
+      </table>
     </div>
     <Variants :data="data.dict.variant_info" />
   </div>
@@ -101,5 +119,13 @@ function playUsa() {
 .volume-up {
   cursor: pointer;
   font-size: large;
+}
+.means-table {
+  table-layout: auto;
+  border-collapse: separate;
+  border-spacing: 0 8px;
+}
+.bg-primary {
+  background-color: #007bff !important;
 }
 </style>

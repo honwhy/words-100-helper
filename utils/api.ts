@@ -54,8 +54,8 @@ export function getWordDetail(topicId: number) {
       headers: { access_token: accessToken },
     })
   })
-    // .then(fillCollectedField)
-    // .then(console.log)
+  // .then(fillCollectedField)
+  // .then(console.log)
 }
 async function fillCollectedField(res: unknown) {
   const data = res as WordDetail
