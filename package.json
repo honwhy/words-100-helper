@@ -1,9 +1,9 @@
 {
-  "name": "wxt-starter",
+  "name": "words-100-helper",
   "type": "module",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "private": true,
-  "description": "manifest.json description",
+  "description": "新百词斩助手",
   "scripts": {
     "dev": "wxt",
     "dev:firefox": "wxt -b firefox",
