@@ -24,6 +24,9 @@
     border-color 0.15s ease-in-out,
     box-shadow 0.15s ease-in-out;
 }
+.badge:empty {
+  display: none;
+}
 .bg-primary {
   background-color: #007bff !important;
 }
@@ -35,4 +38,14 @@ a {
   color: #007bff;
   text-decoration: none;
   background-color: transparent;
+}
+img {
+  vertical-align: middle;
+  border-style: none;
+}
+.volume-up {
+  cursor: pointer;
+  font-size: large;
+  margin-left: 4px;
+  margin-right: 4px;
 }

@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { inject } from 'vue'
 import type { SimilarWord } from '@/utils/models'
 
 defineOptions({ name: 'SimilarWords' })
@@ -6,6 +7,8 @@ defineProps<Props>()
 interface Props {
   data: SimilarWord[]
 }
+type Fn = (topicId: number) => void
+const refreshWordDetail = inject('refreshWordDetail') as Fn
 </script>
 
 <template>
@@ -17,6 +20,7 @@ interface Props {
       <span v-for="similarWord in data" :key="similarWord.topic_id">
         <a
           href="#" tabIndex="-1" :data-topic-id="similarWord.topic_id"
+          @click="refreshWordDetail(similarWord.topic_id)"
         >{{ similarWord.word }}</a>
         &nbsp;&nbsp;
       </span>

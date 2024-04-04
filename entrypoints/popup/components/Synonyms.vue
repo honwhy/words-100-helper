@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { inject } from 'vue'
 import type { Synonym } from '@/utils/models'
 
 interface Props {
@@ -6,6 +7,8 @@ interface Props {
 }
 defineOptions({ name: 'Synonyms' })
 defineProps<Props>()
+  type Fn = (topicId: number) => void
+const refreshWordDetail = inject('refreshWordDetail') as Fn
 </script>
 
 <template>
@@ -17,6 +20,7 @@ defineProps<Props>()
       <span v-for="synonym in data" :key="synonym.syn_ant_topic_id">
         <a
           href="#" tabIndex="-1" :data-topic-id="synonym.syn_ant_topic_id"
+          @click="refreshWordDetail(synonym.syn_ant_topic_id)"
         >{{ synonym.syn_ant }}</a>
         &nbsp;&nbsp;
       </span>

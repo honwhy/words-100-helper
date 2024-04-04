@@ -99,12 +99,4 @@ const sourceUrl = computed(() => {
   width: 20px;
   margin-right: 15px;
 }
-img {
-  vertical-align: middle;
-  border-style: none;
-}
-.volume-up {
-  cursor: pointer;
-  font-size: large;
-}
 </style>

@@ -83,13 +83,13 @@ const chineseMeans = computed(() => {
         </tr>
       </table>
     </div>
-    <Variants :data="data.dict.variant_info" />
-    <Sentences :data="data.dict.sentences" :word="basicInfo.word" />
-    <ShortPhrases :data="data.dict.short_phrases" />
-    <Synonyms :data="data.dict.synonyms" />
-    <Antonyms :data="data.dict.antonyms" />
-    <SimilarWords :data="data.similar_words" />
-    <EnglishParaphrases :data="data.dict.en_means" />
+    <Variants v-if="data.dict.variant_info" :data="data.dict.variant_info" />
+    <Sentences v-if="data.dict.sentences" :data="data.dict.sentences" :word="basicInfo.word" />
+    <ShortPhrases v-if="data.dict.short_phrases" :data="data.dict.short_phrases" />
+    <Synonyms v-if="data.dict.synonyms" :data="data.dict.synonyms" />
+    <Antonyms v-if="data.dict.antonyms" :data="data.dict.antonyms" />
+    <SimilarWords v-if="data.similar_words" :data="data.similar_words" />
+    <EnglishParaphrases v-if="data.dict.en_means" :data="data.dict.en_means" />
   </div>
 </template>
 
