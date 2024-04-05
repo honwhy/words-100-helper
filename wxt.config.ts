@@ -11,6 +11,12 @@ export default defineConfig({
     host_permissions: [
       'http://110.42.229.221/*',
     ],
+    web_accessible_resources: [
+      {
+        resources: ['*.png', '*.svg'],
+        matches: ['<all_urls>'],
+      },
+    ],
   },
   imports: {
     addons: {
