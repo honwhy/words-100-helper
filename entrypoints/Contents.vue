@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { isEmpty } from 'lodash-es'
-import { nextTick, onMounted, provide, ref } from 'vue'
+import { onMounted, provide, ref } from 'vue'
 import SelectionPopper from './SelectionPopper.vue'
 
 defineOptions({ name: 'Contents' })
@@ -37,11 +37,9 @@ function prepopup() {
   rect.x += window.scrollX
   rect.y += window.scrollY
   clientRect.value = rect
-  nextTick(() => {
-    show.value = true
-  })
+  show.value = true
 }
-
+const content = ref('')
 async function selectWordHandler(e: MouseEvent) {
   e.preventDefault()
 
@@ -54,6 +52,7 @@ async function selectWordHandler(e: MouseEvent) {
 
   if (isEmpty(selectedContent) || selectedContent.length > 300)
     return
+  content.value = selectedContent
   // 计算弹窗位置
   prepopup()
 }
@@ -70,6 +69,7 @@ onMounted(() => {
       :client-rect="clientRect"
       :trigger-mode="triggerMode"
       :bing-translate-enable="bingTranslateEnable"
+      :content="content"
     />
   </div>
 </template>
