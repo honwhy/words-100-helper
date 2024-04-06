@@ -11,6 +11,7 @@ export default defineContentScript({
       append: 'last',
       onMount: (container) => {
         // Create the app and mount it to the UI container
+        container.id = 'bcz-lgelpdnoogahffdkigeeonhggglogabb'
         const app = createApp(App)
         app.mount(container)
         return app

@@ -1,63 +1,104 @@
 <script setup lang="ts">
-import { inject, onMounted, ref } from 'vue'
-import {
-  flip,
-  offset,
-  shift,
-  useFloating,
-} from '@floating-ui/vue'
 import { onClickOutside } from '@vueuse/core'
+import type { ElPopper } from 'element-plus'
+import { ElMessage } from 'element-plus'
+import { cloneDeep, isEmpty } from 'lodash-es'
+import { stemmer } from 'stemmer'
+import { nextTick, onMounted, onUnmounted, ref } from 'vue'
 import WordPopper from './WordPopper.vue'
-import type { MyClientRect } from '@/utils/types'
 
 defineOptions({ name: 'SelectionPopper' })
 const props = defineProps<Props>()
 interface Props {
   triggerMode: string
-  bingTranslateEnable: boolean
-  clientRect: MyClientRect
-  content: string
+  showStyle: string
 }
-const reference = ref({
-  getBoundingClientRect: () => {
-    return props.clientRect
-  },
-})
-const floating = ref(null)
-const { x, y, strategy, update } = useFloating(reference, floating, {
-  placement: 'bottom-start',
-  middleware: [offset(10), flip(), shift()],
-})
+// 响应式变量
+const popoverRef = ref<InstanceType<typeof ElPopper>>()
+const selectedTextRef = ref<HTMLElement>()
+const isPopoverVisible = ref(false)
+const selectedText = ref('')
 
 const showIcon = ref(false)
-// const showWordInfo = ref(false)
-const iconSrc = ref(browser.runtime.getURL('/icon.png'))
-// const target = ref(null)
-type Fn = (val: boolean) => void
-const setPopuped = inject('setPopuped') as Fn
-// 比较鼠标位置是否在矩形内
-function isPointerInRect(event: PointerEvent, rect: MyClientRect): boolean {
-  const pointerX = event.clientX
-  const pointerY = event.clientY
-  return (
-    pointerX >= rect.left
-    && pointerX <= rect.right
-    && pointerY >= rect.top
-    && pointerY <= rect.bottom
-  )
-}
-onClickOutside(floating, (event) => {
-  if (isPointerInRect(event, props.clientRect)) {
-    console.log('pointer in rect')
+const showWordPopper = ref(false)
+const showArrow = ref(false)
+const holdingWidth = ref(15)
+const bingTranslateEnable = ref(false)
+// 展示icon还是直接展示翻译-根据配置来 TODO
+// 如果是单词单字就采用百词斩翻译否则使用bing翻译
+function handleSelection() {
+  if (isPopoverVisible.value) {
+    console.log('still in the last on popper')
     return
   }
-  setPopuped(false)
+  if (isChineseWord(selectedText.value) || isEnglishWord(selectedText.value)) {
+    if (props.triggerMode === 'showIcon') {
+      showIcon.value = true
+      showArrow.value = false
+      holdingWidth.value = 15
+      isPopoverVisible.value = true
+    }
+    else {
+      popupWordWebuiPopover(selectedText.value)
+    }
+  }
+  else if (bingTranslateEnable.value) {
+    // popupPhraseWebuiPopover(content);
+  }
+}
+// 监听鼠标抬起事件以检测是否进行了文本选择
+function handleMouseUp(event: MouseEvent) {
+  console.log(event)
+  if (isPopoverVisible.value) {
+    console.log('still in the last on popper')
+    return
+  }
+  const selection = window.getSelection()
+  if (selection && selection.type === 'Range') {
+    // 如果存在非空的选择范围
+    const value = selection.toString().trim()
+    if (isEmpty(value)) {
+      console.log('selection is Empty')
+      return
+    }
+    selectedText.value = value
+    selectedTextRef.value!.getBoundingClientRect = () => {
+      const selection = window.getSelection()
+      const range = selection!.getRangeAt(0)
+      const rect = range.getBoundingClientRect()
+      // 考虑滚动偏移
+      rect.x += window.scrollX
+      rect.y += window.scrollY
+      return rect
+    }
+    handleSelection()
+  }
+  else {
+    // 无有效选择时，关闭弹窗
+    isPopoverVisible.value = false
+  }
+}
+
+// const showWordInfo = ref(false)
+const iconSrc = ref(browser.runtime.getURL('/icon.png'))
+// 在弹出层出现前更新其位置，确保跟随所选文本附近的鼠标位置
+function onBeforeEnter() {
+  console.log('onBeforeEnter', popoverRef, selectedTextRef)
+}
+
+// 弹出层消失后重置相关状态
+function onAfterLeave() {
+  // selectedText.value = ''
+}
+
+// 在组件挂载时添加必要的监听器
+onMounted(() => {
+  document.addEventListener('mouseup', handleMouseUp)
 })
 
-onMounted(() => {
-  console.log('props.triggerMode', props.triggerMode)
-  if (props.triggerMode === 'showIcon')
-    showIcon.value = true
+// 在组件卸载时移除监听器以避免内存泄漏
+onUnmounted(() => {
+  document.removeEventListener('mouseup', handleMouseUp)
 })
 function isChineseWord(str: string) {
   return str.length <= 8
@@ -67,46 +108,149 @@ function isEnglishWord(str: string) {
   const englishWordRegex = /^[a-zA-Z\\-]+$/
   return englishWordRegex.test(str)
 }
-function setup() {
-  console.log('setup')
-  reference.value = {
-    getBoundingClientRect() {
-      return props.clientRect
-    },
-  }
-}
 
-onMounted(() => {
-  setup()
-})
-const showWordPopper = ref(false)
+const dict = ref<Dict>()
+interface Response { dict: Dict }
+function sendRequest(option: { action: string, args: string }) {
+  return new Promise((resolve, reject) => {
+    browser.runtime.sendMessage(option).then((result: unknown) => {
+      // 以 [Error]: 开头代表请求报错
+      if (typeof result === 'string' && result.startsWith('[Error]:'))
+        return reject(new Error(result.substring(8)))
+      resolve(result)
+    })
+  })
+}
 function popupWordWebuiPopover(word: string) {
   console.log('popupWordWebuiPopover', word)
-  showWordPopper.value = true
-  showIcon.value = false
-  update()
+  // 词干提取，如：words -> word
+  const stemWord = stemmer(word)
+
+  sendRequest({ action: 'getWordInfo', args: stemWord }).then((response) => {
+    if (!response)
+      return
+    const data = response as Response
+    dict.value = data.dict as Dict
+    showIcon.value = false
+    showArrow.value = true
+    nextTick(() => {
+      isPopoverVisible.value = true
+      showWordPopper.value = true
+      showArrow.value = true
+      holdingWidth.value = 391
+    })
+  })
+    .catch((e) => {
+      console.error(e)
+      // $supportElement.$el.css('display', 'none')
+      // $supportElement.$el.trigger('baicizhanHelper:alert', ['查询失败，稍后再试'])
+      ElMessage.warning('查询失败，稍后再试')
+    })
 }
-function popupPhraseWebuiPopover(phrase: string) {
-  console.log('popupPhraseWebuiPopover', phrase)
-}
+// function popupPhraseWebuiPopover(phrase: string) {
+//   console.log('popupPhraseWebuiPopover', phrase)
+// }
 function onClick() {
-  if (isChineseWord(props.content) || isEnglishWord(props.content))
-    popupWordWebuiPopover(props.content)
-  else if (props.bingTranslateEnable)
-    popupPhraseWebuiPopover(props.content)
+  if (isChineseWord(selectedText.value) || isEnglishWord(selectedText.value))
+    popupWordWebuiPopover(selectedText.value)
+  // else if (props.bingTranslateEnable)
+  //   popupPhraseWebuiPopover(selectedText.value)
 }
+// 比较鼠标位置是否在矩形内
+function isPointerInRect(event: PointerEvent, rect: DOMRect | undefined): boolean {
+  if (rect === undefined)
+    return false
+  const pointerX = event.clientX
+  const pointerY = event.clientY
+  return (
+    pointerX >= rect.left
+    && pointerX <= rect.right
+    && pointerY >= rect.top
+    && pointerY <= rect.bottom
+  )
+}
+function cleanup() {
+  isPopoverVisible.value = false
+  showIcon.value = false
+  showWordPopper.value = false
+  selectedText.value = ''
+  selectedTextRef.value!.getBoundingClientRect = () => {
+    const rect = document.body.getBoundingClientRect()
+    const cloned = cloneDeep(rect)
+    Object.assign(cloned, {
+      x: 0,
+      y: 0,
+      top: 0,
+      left: 0,
+      bottom: 0,
+      right: 0,
+      width: 0,
+      height: 0,
+    })
+    return cloned
+  }
+}
+const iconRef = ref<HTMLDivElement>()
+const wordPopperRef = ref<HTMLDivElement>()
+onClickOutside(popoverRef, (event) => {
+  if (isPointerInRect(event, selectedTextRef.value?.getBoundingClientRect())) {
+    console.log('pointer on top of selected text')
+    return
+  }
+  const iconElement = iconRef.value
+  const rect = iconElement?.getBoundingClientRect()
+  if (isPointerInRect(event, rect)) {
+    console.log('pointer on top of icon element')
+    return
+  }
+  const wordPopperElement = wordPopperRef.value
+  const rect2 = wordPopperElement?.getBoundingClientRect()
+  if (isPointerInRect(event, rect2)) {
+    console.log('pointer on top of word popper element')
+    return
+  }
+  cleanup()
+})
 </script>
 
 <template>
-  <div ref="floating" :style="{ position: strategy, top: `${y}px`, left: `${x}px` }" style="position: absolute; z-index: 9999;">
+  <!-- el-popover 组件 -->
+  <el-popover
+    ref="popoverRef"
+    v-model:visible="isPopoverVisible"
+    placement="bottom-start"
+    :popper-class="{ customPopperClass: showIcon }"
+    :show-arrow="showArrow"
+    :hide-after="1000000"
+    :width="holdingWidth"
+    @before-enter="onBeforeEnter"
+    @after-leave="onAfterLeave"
+  >
     <!-- icon 区域 -->
-    <div v-if="showIcon" name="__baicizhanHelperIconTips__" @click="onClick">
+    <div v-if="showIcon" ref="iconRef" name="__baicizhanHelperIconTips__" @click="onClick">
       <div style="width: 25px; height: 25px;">
         <img v-if="showIcon" :src="iconSrc" style="max-width: 25px; border-radius: 5px; opacity: 0.8; cursor: pointer;">
       </div>
     </div>
     <!-- 单词区域 -->
-    <WordPopper v-if="showWordPopper" />
+    <div v-if="showWordPopper" ref="wordPopperRef">
+      <WordPopper v-if="showWordPopper && dict" :data="dict" :show-style="showStyle" />
+    </div>
     <!-- bing翻译 -->
-  </div>
+    <template #reference>
+      <!-- 触发弹出层的元素 -->
+      <span ref="selectedTextRef">{{ selectedText }}</span>
+    </template>
+  </el-popover>
 </template>
+
+<style lang="scss">
+/* 自定义弹出层样式 */
+.customPopperClass {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  width: 15px !important;
+}
+</style>

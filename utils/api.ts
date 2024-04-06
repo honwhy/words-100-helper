@@ -70,3 +70,15 @@ async function fillCollectedField(res: unknown) {
 function getWordbookId() {
   return storageModule.get('bookId').then(bookId => bookId || 0)
 }
+
+export function getWordInfo(word: string) {
+  return searchWord(word).then((res) => {
+    const data = (res ?? []) as Word[]
+    const bestMatch = data[0]
+    const topicId = bestMatch?.topic_id
+
+    return topicId
+      ? getWordDetail(topicId)
+      : Promise.resolve(null)
+  })
+}

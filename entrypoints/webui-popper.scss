@@ -1,0 +1,52 @@
+.webui-popover {
+    // position: absolute;
+    // z-index: 9999;
+    // background-color: rgb(255, 255, 255);
+    // box-shadow: rgba(0, 0, 0, 0.2) 0px 5px 10px;
+    padding: 1px;
+    // border-width: 1px;
+    // border-style: solid;
+    // border-color: rgba(0, 0, 0, 0.2);
+    // border-image: initial;
+    // border-radius: 6px;
+}
+.webui-popover, .webui-popover-dark {
+    // top: 0px;
+    // left: 0px;
+    // display: none;
+    min-width: 50px;
+    min-height: 32px;
+    text-align: left;
+    background-clip: padding-box;
+    white-space: normal;
+}
+.webui-popover-dark.bottom, .webui-popover-dark.bottom-left, .webui-popover-dark.bottom-right, .webui-popover.bottom, .webui-popover.bottom-left, .webui-popover.bottom-right {
+    margin-top: 10px;
+}
+.webui-popover-dark.in, .webui-popover.in {
+    transform: none;
+    opacity: 1;
+}
+
+.webui-popover-title {
+    color: rgb(0, 0, 0);
+    font-size: 18px;
+    font-weight: 700;
+    line-height: 18px;
+    // background-color: rgb(255, 255, 255);
+    padding: 0px 14px;
+    margin: 0px;
+    border-bottom: 1px solid rgb(242, 242, 242);
+    border-radius: 5px 5px 0px 0px;
+}
+.webui-popover-content {
+    // display: none;
+    padding: 0px 14px;
+    overflow: auto;
+}
+.webui-popover .webui-popover-content, .webui-popover-dark .webui-popover-content {
+    max-width: 350px;
+    display: block;
+    padding: 0px 14px;
+    overflow: auto;
+}
