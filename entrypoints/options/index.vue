@@ -1,9 +1,26 @@
 <script setup lang="ts">
-import { ref } from 'vue'
-import Usage from './Usage.vue'
+import { onMounted, ref } from 'vue'
+import { isEmpty } from 'lodash-es'
+
+import Usage from './components/Usage.vue'
+import SettingContent from './components/SettingContent.vue'
+import LoginModal from './components/LoginModal.vue'
+import storageModule from '@/utils/storage'
+import Events from '@/utils/events'
+import EventBus from '@/utils/bus'
 
 const activeName = ref('')
 function handleClick() {}
+async function setup() {
+  const accessToken = await storageModule.get('accessToken')
+  if (isEmpty(accessToken))
+    EventBus.emit(Events.UNAUTHED)
+  else
+    EventBus.emit(Events.AUTHED)
+}
+onMounted(() => {
+  setup()
+})
 </script>
 
 <template>
@@ -290,11 +307,13 @@ function handleClick() {}
       </div>
     </div>
   </div>
-
+  <div v-show="activeName === 'settingTabContent'" class="html-container">
+    <SettingContent />
+  </div>
   <div v-if="activeName === 'usage'" class="html-container">
     <Usage />
   </div>
-  <div v-show="activeName === 'comments'" class="html-container">
+  <div v-if="activeName === 'comments'" class="html-container">
     <div style="padding-left: 8px;">
       <a target="_blank" href="http://110.42.229.221:8080/comments">查看更多</a>
     </div>
@@ -307,60 +326,7 @@ function handleClick() {}
     />
   </div>
   <!-- 登录模态框 -->
-  <div id="loginModel" class="modal" tabindex="-1">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 id="loginModelLabel" class="modal-title">
-            短信登录
-          </h5>
-        </div>
-        <div class="modal-body">
-          <form id="phoneLoginForm" style="display: block;">
-            <div class="form-group row">
-              <label for="phoneNumInput" class="col-sm-3 col-form-label">手机号码：</label>
-              <div class="col-sm-8">
-                <input id="phoneNumInput" type="text" class="form-control">
-              </div>
-            </div>
-            <div class="form-group row">
-              <label for="verifyCodeInput" class="col-sm-3 col-form-label">验证码：</label>
-              <div class="col-sm-8">
-                <input id="verifyCodeInput" type="text" class="form-control">
-              </div>
-            </div>
-          </form>
-
-          <form id="emailLoginForm" style="display: none;">
-            <div class="form-group row">
-              <label for="emailInput" class="col-sm-3 col-form-label">邮箱地址：</label>
-              <div class="col-sm-8">
-                <input id="emailInput" type="text" class="form-control">
-              </div>
-            </div>
-            <div class="form-group row">
-              <label for="passwordInput" class="col-sm-3 col-form-label">密码：</label>
-              <div class="col-sm-8">
-                <input id="passwordInput" type="text" class="form-control">
-              </div>
-            </div>
-          </form>
-        </div>
-        <div class="modal-footer">
-          <a id="wechatLoginLink" title="微信登录" href="#">微信</a>
-          <a id="qqLoginLink" title="QQ登录" href="#">QQ</a>
-          <a id="phoneLoginLink" title="短信登录" href="#">短信</a>
-          <a id="emailLoginLink" title="邮箱登录" href="#">邮箱</a>
-          <button id="sendVerifyButton" type="button" class="btn btn-secondary">
-            发送验证码
-          </button>
-          <button id="loginButton" type="button" class="btn btn-primary">
-            登录
-          </button>
-        </div>
-      </div>
-    </div>
-  </div>
+  <LoginModal />
 
   <div id="wordDetailModal" class="modal" tabindex="-1">
     <div class="modal-dialog">
@@ -415,3 +381,4 @@ function handleClick() {}
   min-height: 1000px;
 }
 </style>
+@/utils/bus

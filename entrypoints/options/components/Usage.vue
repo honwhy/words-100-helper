@@ -1,6 +1,7 @@
 <script setup>
 import { ref } from 'vue'
 
+defineOptions({ name: 'Usage' })
 const login1 = ref(browser.runtime.getURL('/images/login1.png'))
 const login2 = ref(browser.runtime.getURL('/images/login2.png'))
 const selectWorkbook = ref(browser.runtime.getURL('/images/select-workbook.png'))
