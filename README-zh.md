@@ -4,6 +4,11 @@
   <p align="center">新百词斩网页助手，支持取词翻译、收藏单词等操作</p>
 </p>
 
+[![English badge](https://img.shields.io/badge/%E8%8B%B1%E6%96%87-English-blue)](./README.md)
+[![简体中文 badge](https://img.shields.io/badge/%E7%AE%80%E4%BD%93%E4%B8%AD%E6%96%87-Simplified%20Chinese-blue)](./README-zh.md)
+
+<a href="https://afdian.net/a/honwhy" target="_blank"><img src="https://pic1.afdiancdn.com/static/img/welcome/button-sponsorme.png" alt="在为发电支持我" style="height: 40px !important;width: 145px !important;" ></a>
+
 # 新百词斩助手
 
 中文 | [English](./README.md)
