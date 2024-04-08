@@ -1,5 +1,6 @@
 import { createApp } from 'vue'
-import './bootstrap.css'
+// 引入 Bootstrap CSS
+import 'bootstrap/dist/css/bootstrap.min.css'
 import './option.css'
 import App from './index.vue'
 

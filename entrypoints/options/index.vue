@@ -2,21 +2,29 @@
 import { onMounted, ref } from 'vue'
 import { isEmpty } from 'lodash-es'
 
+import { CaretBottom } from '@element-plus/icons-vue'
 import Usage from './components/Usage.vue'
 import SettingContent from './components/SettingContent.vue'
 import LoginModal from './components/LoginModal.vue'
 import storageModule from '@/utils/storage'
 import Events from '@/utils/events'
-import EventBus from '@/utils/bus'
+import EventBus from '@/utils/eventBus'
 
 const activeName = ref('')
 function handleClick() {}
+const nickname = ref('游客用户')
 async function setup() {
   const accessToken = await storageModule.get('accessToken')
   if (isEmpty(accessToken))
     EventBus.emit(Events.UNAUTHED)
   else
     EventBus.emit(Events.AUTHED)
+
+  EventBus.on('nickname', (data: unknown) => {
+    // console.log('type,e', data)
+    const name = data as string
+    nickname.value = name
+  })
 }
 onMounted(() => {
   setup()
@@ -47,6 +55,19 @@ onMounted(() => {
     <el-button text class="custom-tabs-label" :class="{ 'is-active': activeName === 'comments' }" @click="activeName = 'comments'">
       问题反馈
     </el-button>
+    <el-dropdown trigger="click" style="min-width: 96px; margin-left: 12px; color: #007bff">
+      <span class="el-dropdown-link">
+        {{ nickname }}
+        <el-icon class="el-icon--right"><CaretBottom /></el-icon>
+      </span>
+      <template #dropdown>
+        <el-dropdown-menu>
+          <el-dropdown-item style="min-width: 100px;">
+            <span>退出</span>
+          </el-dropdown-item>
+        </el-dropdown-menu>
+      </template>
+    </el-dropdown>
   </div>
 
   <ul id="myTab" class="nav nav-pills justify-content-center" role="tablist">
@@ -365,6 +386,7 @@ onMounted(() => {
   border: none;
   border-radius: 0.25rem;
   font-size: 16px;
+  font-weight: bold;
 }
 :deep(.el-tabs__item.is-active button) {
   color: #fff;

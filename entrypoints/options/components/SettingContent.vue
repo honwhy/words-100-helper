@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { onMounted } from 'vue'
-import EventBus from '@/utils/bus'
+import EventBus from '@/utils/eventBus'
 import Events from '@/utils/events'
 
 defineOptions({ name: 'SettingContent' })

@@ -82,3 +82,51 @@ export function getWordInfo(word: string) {
       : Promise.resolve(null)
   })
 }
+
+export function getUserInfo() {
+  return loadRequestOptions().then(([host, port, accessToken]) => {
+    const url = `http://${host}:${port}/userInfo`
+
+    return sendRequest({
+      url,
+      method: 'GET',
+      headers: { access_token: accessToken },
+    })
+  })
+}
+
+export function loginWithEmail(email: string, password: string) {
+  return loadRequestOptions().then(([host, port]) => {
+    const url = `http://${host}:${port}/loginWithEmail?email=${encodeURIComponent(email)}&password=${password}`
+
+    return sendRequest({
+      url,
+      method: 'POST',
+      headers: {},
+    })
+  })
+}
+
+export function loginWithPhone(phoneNum: string, verifyCode: string) {
+  return loadRequestOptions().then(([host, port]) => {
+    const url = `http://${host}:${port}/login/${phoneNum}/${verifyCode}`
+
+    return sendRequest({
+      url,
+      method: 'POST',
+      headers: {},
+    })
+  })
+}
+
+export function getVerifyCode(phoneNum: string) {
+  return loadRequestOptions().then(([host, port]) => {
+    const url = `http://${host}:${port}/login/sendSmsVerifyCode/${phoneNum}`
+
+    return sendRequest({
+      url,
+      method: 'POST',
+      headers: {},
+    })
+  })
+}
