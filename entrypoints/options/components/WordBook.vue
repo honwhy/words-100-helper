@@ -221,25 +221,25 @@ function openDetail(topicId: number) {
       <div class="row">
         <div class="col-sm-8 offset-sm-2">
           <div class="row" style="margin: 20px 0;">
-            <el-select
-              id="wordbookSelect"
-              v-model="selectedBookId"
-              placeholder=""
-              size="large"
-              style="width: 240px"
-              class="form-control col-sm-5"
-            >
-              <el-option
-                v-for="item in options"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value"
-              />
-            </el-select>
+            <div class="col-sm-5" style="padding: 0">
+              <el-select
+                id="wordbookSelect"
+                v-model="selectedBookId"
+                placeholder=""
+                style="padding: 0; height: 38px;"
+              >
+                <el-option
+                  v-for="item in options"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value"
+                />
+              </el-select>
+            </div>
 
             <button
               id="wordbookRefreshButton" type="button" class="btn btn-primary"
-              style="margin-left: 10px;" data-toggle="tooltip" title="刷新单词本显示最新内容" tabIndex="-1"
+              style="margin-left: 10px; height: 36px; width: 36px; padding: 0" data-toggle="tooltip" title="刷新单词本显示最新内容" tabIndex="-1"
             >
               <img style="width: 20px;" :src="refresh">
             </button>
@@ -311,7 +311,7 @@ function openDetail(topicId: number) {
             </tbody>
             <tbody v-if="words.length === 0 && !loading">
               <tr>
-                <td>加载失败，请稍后重试</td>
+                <!-- <td>加载失败，请稍后重试</td> -->
               </tr>
             </tbody>
           </table>
@@ -322,3 +322,27 @@ function openDetail(topicId: number) {
   <!-- 单词详情 -->
   <WordDetailComp v-if="showDataDetail && dataDetail" :data="dataDetail" />
 </template>
+
+<style scoped lang="scss">
+:deep(.el-select__wrapper) {
+  height: 38px;
+}
+img {
+  vertical-align: middle;
+  border-style: none;
+}
+:deep(.el-button-group) {
+  .el-button {
+    width: 90px;
+    height: 36px;
+    margin-right: 4px;
+  }
+}
+.btn {
+  border-radius: 4px !important;
+}
+.btn-outline-primary {
+  color: #007bff;
+  border-color: #007bff;
+}
+</style>
