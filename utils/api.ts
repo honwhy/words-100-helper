@@ -67,8 +67,9 @@ async function fillCollectedField(res: unknown) {
 
   return data
 }
-function getWordbookId() {
-  return storageModule.get('bookId').then(bookId => bookId || 0)
+async function getWordbookId() {
+  const bookId = await storageModule.get('bookId').then(bookId => bookId || 0)
+  return bookId as number
 }
 
 export function getWordInfo(word: string) {
@@ -129,4 +130,38 @@ export function getVerifyCode(phoneNum: string) {
       headers: {},
     })
   })
+}
+
+export function getBookWords(bookId: number) {
+  return loadRequestOptions().then(([host, port, accessToken]) => {
+    const url = `http://${host}:${port}/book/${bookId}/words`
+
+    return sendRequest({
+      url,
+      method: 'GET',
+      headers: { access_token: accessToken },
+    })
+  })
+}
+
+async function removeWord(data: unknown, topicId: number) {
+  WordbookStorage.remove(await getWordbookId(), topicId)
+
+  return data
+}
+export function cancelCollectWord(topicId: number) {
+  return Promise.all([
+    loadRequestOptions(),
+    getWordbookId(),
+  ])
+    .then(([[host, port, accessToken], bookId]) => {
+      const url = `http://${host}:${port}/book/${bookId}/word/${topicId}`
+
+      return sendRequest({
+        url,
+        method: 'DELETE',
+        headers: { access_token: accessToken },
+      })
+    })
+    .then(async data => removeWord(data, topicId))
 }

@@ -66,7 +66,8 @@ interface LoginData {
 }
 function loginSuccessful(res: unknown) {
   const data = res as LoginData
-  // ccess_token 写入 storage
+  console.log('loginSuccessful', data)
+  // access_token 写入 storage
   storageModule.set('accessToken', data.access_token)
   // 禁止点击
   // $('#loginButton').off('click').prop('disabled', true)

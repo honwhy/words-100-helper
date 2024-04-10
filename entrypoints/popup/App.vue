@@ -2,7 +2,7 @@
 import { provide, ref } from 'vue'
 import { Search } from '@element-plus/icons-vue'
 import { debounce } from 'lodash-es'
-import WordDetailComp from './WordDetail.vue'
+import WordDetailComp from '../components/WordDetail.vue'
 import type { Word, WordDetail } from '@/utils/models'
 import { getWordDetail, searchWord } from '@/utils/api'
 

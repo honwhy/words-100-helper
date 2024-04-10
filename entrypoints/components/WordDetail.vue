@@ -1,16 +1,16 @@
 <script lang="ts" setup>
 import { computed, ref } from 'vue'
 import { isNil } from 'lodash-es'
-import Variants from './components/Variants.vue'
-import Sentences from './components/Sentences.vue'
+import Variants from './Variants.vue'
+import Sentences from './Sentences.vue'
 import starFill from '/svgs/star-fill.svg'
 import star from '/svgs/star.svg'
 import volumeup from '/svgs/volume-up.svg'
-import ShortPhrases from './components/ShortPhrases.vue'
-import Synonyms from './components/Synonyms.vue'
-import Antonyms from './components/Antonyms.vue'
-import SimilarWords from './components/SimilarWords.vue'
-import EnglishParaphrases from './components/EnglishParaphrases.vue'
+import ShortPhrases from './ShortPhrases.vue'
+import Synonyms from './Synonyms.vue'
+import Antonyms from './Antonyms.vue'
+import SimilarWords from './SimilarWords.vue'
+import EnglishParaphrases from './EnglishParaphrases.vue'
 import type { WordDetail } from '@/utils/models'
 
 defineOptions({ name: 'WordDetail' })

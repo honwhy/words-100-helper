@@ -251,6 +251,6 @@ onClickOutside(popoverRef, (event) => {
   border: none !important;
   box-shadow: none !important;
   padding: 0 !important;
-  width: 15px !important;
+  min-width: 25px !important;
 }
 </style>

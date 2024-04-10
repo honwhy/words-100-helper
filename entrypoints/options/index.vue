@@ -5,6 +5,7 @@ import { isEmpty } from 'lodash-es'
 import { CaretBottom } from '@element-plus/icons-vue'
 import Usage from './components/Usage.vue'
 import SettingContent from './components/SettingContent.vue'
+import WordBook from './components/WordBook.vue'
 import LoginModal from './components/LoginModal.vue'
 import storageModule from '@/utils/storage'
 import Events from '@/utils/events'
@@ -13,6 +14,8 @@ import EventBus from '@/utils/eventBus'
 const activeName = ref('')
 function handleClick() {}
 const nickname = ref('游客用户')
+const githubMark = ref(browser.runtime.getURL('/github-mark.png'))
+const refresh = ref(browser.runtime.getURL('/svgs/refresh.svg'))
 async function setup() {
   const accessToken = await storageModule.get('accessToken')
   if (isEmpty(accessToken))
@@ -68,6 +71,11 @@ onMounted(() => {
         </el-dropdown-menu>
       </template>
     </el-dropdown>
+    <el-button text class="custom-tabs-label">
+      <a href="https://github.com/honwhy/words-100-helper" target="_blank" title="项目首页">
+        <img style="width: 40px;" :src="githubMark">
+      </a>
+    </el-button>
   </div>
 
   <ul id="myTab" class="nav nav-pills justify-content-center" role="tablist">
@@ -104,7 +112,7 @@ onMounted(() => {
     </li>
     <li class="nav-item" role="presentation">
       <a href="https://github.com/marmot-z/baicizhan-helper" target="_blank" title="项目首页">
-        <img style="width: 40px;" src="./assets/images/github-mark.png">
+        <img style="width: 40px;" :src="githubMark">
       </a>
     </li>
   </ul>
@@ -120,7 +128,7 @@ onMounted(() => {
                 id="wordbookRefreshButton" type="button" class="btn btn-primary"
                 style="margin-left: 10px;" data-toggle="tooltip" title="刷新单词本显示最新内容" tabIndex="-1"
               >
-                <img style="width: 20px;" src="./assets/images/svgs/refresh.svg">
+                <img style="width: 20px;" :src="refresh">
               </button>
               <div class="col-sm-4 offset-sm-2">
                 <input id="maskEnglishButton" type="checkbox" tabIndex="-1">
@@ -328,6 +336,9 @@ onMounted(() => {
       </div>
     </div>
   </div>
+  <div v-show="activeName === 'wordbookTabContent'" class="html-container">
+    <WordBook />
+  </div>
   <div v-show="activeName === 'settingTabContent'" class="html-container">
     <SettingContent />
   </div>
@@ -368,6 +379,7 @@ onMounted(() => {
   display: flex;
   justify-content: center;
   align-items: center;
+  margin-top: 20px;
 }
 :deep(.el-tabs__header) {
   margin-bottom: 0;

@@ -8,3 +8,8 @@ export interface MyClientRect {
   bottom: number
   right: number
 }
+
+export interface LabelOption {
+  value: string
+  label: string
+}
