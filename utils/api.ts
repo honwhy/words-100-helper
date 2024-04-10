@@ -1,9 +1,8 @@
 import type { WordDetail } from './models'
 import storageModule from './storage'
 import WordbookStorage from './wordbook-storage'
+import { defaultHost, defaultPort } from './config'
 
-const defaultHost = '110.42.229.221'
-const defaultPort = 8080
 function loadRequestOptions(): Promise<[string, number, string]> {
   const keys = ['host', 'port', 'accessToken']
 
@@ -164,4 +163,16 @@ export function cancelCollectWord(topicId: number) {
       })
     })
     .then(async data => removeWord(data, topicId))
+}
+
+export function getBooks() {
+  return loadRequestOptions().then(([host, port, accessToken]) => {
+    const url = `http://${host}:${port}/books`
+
+    return sendRequest({
+      url,
+      method: 'GET',
+      headers: { access_token: accessToken },
+    })
+  })
 }

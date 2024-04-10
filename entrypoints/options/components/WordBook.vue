@@ -2,6 +2,7 @@
 import { computed, onMounted, ref } from 'vue'
 import { ElMessage } from 'element-plus'
 import WordDetailComp from '../../components/WordDetail.vue'
+import { useWordBook } from './hooks'
 import EventBus from '@/utils/eventBus'
 import Events from '@/utils/events'
 import storageModule from '@/utils/storage'
@@ -38,27 +39,28 @@ const sortFns = {
   },
 } as Record<Keys, SortFn>
 
-interface UserBook {
-  user_book_id: string
-  book_name: string
-  word_num: number
-}
-interface UserBooks {
-  user_books: UserBook[]
-}
-const selectedBookId = ref(0)
-onMounted(async () => {
-  const id = await storageModule.get('bookId')
-  selectedBookId.value = id as number
-})
-const options = ref<LabelOption[]>([])
-async function generateWordbooks(res: unknown) {
-  const data = res as UserBooks
-  options.value = data.user_books.map(book => ({
-    value: book.user_book_id,
-    label: `${book.book_name}(已收录 ${book.word_num} 词)`,
-  }))
-}
+// interface UserBook {
+//   user_book_id: string
+//   book_name: string
+//   word_num: number
+// }
+// interface UserBooks {
+//   user_books: UserBook[]
+// }
+const { selectedBookId, options } = useWordBook()
+// const selectedBookId = ref(0)
+// onMounted(async () => {
+//   const id = await storageModule.get('bookId')
+//   selectedBookId.value = id as number
+// })
+// const options = ref<LabelOption[]>([])
+// async function generateWordbooks(res: unknown) {
+//   const data = res as UserBooks
+//   options.value = data.user_books.map(book => ({
+//     value: book.user_book_id,
+//     label: `${book.book_name}(已收录 ${book.word_num} 词)`,
+//   }))
+// }
 function loadFromServer(bookId: number) {
   return getBookWords(bookId).then((data) => {
     WordbookStorage.save(bookId, data)
@@ -133,10 +135,10 @@ function setup() {
     console.log('WordBook got AUTHED')
     loadWordbookTable(false)
   })
-  EventBus.on(Events.BOOKS_LOADED, (data) => {
-    console.log('WordBook got BOOKS_LOADED')
-    generateWordbooks(data)
-  })
+  // EventBus.on(Events.BOOKS_LOADED, (data) => {
+  //   console.log('WordBook got BOOKS_LOADED')
+  //   generateWordbooks(data)
+  // })
 }
 onMounted(() => {
   setup()

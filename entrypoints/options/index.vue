@@ -77,10 +77,10 @@ onMounted(() => {
     </el-button>
   </div>
   <!-- tab内容 -->
-  <div v-show="activeName === 'wordbookTabContent'" class="html-container">
+  <div v-if="activeName === 'wordbookTabContent'" class="html-container">
     <WordBook />
   </div>
-  <div v-show="activeName === 'settingTabContent'" class="html-container">
+  <div v-if="activeName === 'settingTabContent'" class="html-container">
     <SettingContent />
   </div>
   <div v-if="activeName === 'usage'" class="html-container">
