@@ -209,19 +209,29 @@ onMounted(() => {
             <div class="form-group row">
               <label class="col-sm-3 col-form-label">单词详情内容</label>
               <div class="col-sm-9">
-                <div class="form-check">
-                  <input id="showVariantCheck" class="form-check-input" type="checkbox">
-                  <label class="form-check-label" for="showVariantCheck">
-                    单词变形
-                  </label>
+                <div class="form-check" style="padding-left: 0;">
+                  <div class="checkbox-row">
+                    <el-checkbox v-model="settings.showVariant" label="单词变形" />
+                  </div>
+                  <div class="checkbox-row">
+                    <el-checkbox v-model="settings.showExample" label="图文例句" />
+                  </div>
+                  <div class="checkbox-row">
+                    <el-checkbox v-model="settings.shortPhrasesDisplay" label="短语" />
+                  </div>
+                  <div class="checkbox-row">
+                    <el-checkbox v-model="settings.synonymsDisplay" label="近义词" />
+                  </div>
+                  <div class="checkbox-row">
+                    <el-checkbox v-model="settings.antonymsDisplay" label="反义词" />
+                  </div>
+                  <div class="checkbox-row">
+                    <el-checkbox v-model="settings.similarWordsDisplay" label="形近词" />
+                  </div>
+                  <div class="checkbox-row">
+                    <el-checkbox v-model="settings.englishParaphraseDisplay" label="英文释义" />
+                  </div>
                 </div>
-                <el-checkbox v-model="settings.showVariant" label="单词变形" class="form-check-input" />
-                <el-checkbox v-model="settings.showExample" label="图文例句" class="form-check-input" />
-                <el-checkbox v-model="settings.shortPhrasesDisplay" label="短语" class="form-check-input" />
-                <el-checkbox v-model="settings.synonymsDisplay" label="近义词" class="form-check-input" />
-                <el-checkbox v-model="settings.antonymsDisplay" label="反义词" class="form-check-input" />
-                <el-checkbox v-model="settings.similarWordsDisplay" label="形近词" class="form-check-input" />
-                <el-checkbox v-model="settings.englishParaphraseDisplay" label="英文释义" class="form-check-input" />
               </div>
             </div>
             <div class="form-group row" style="display: none;">
@@ -252,22 +262,22 @@ onMounted(() => {
             <div class="form-group row">
               <label class="col-sm-3 col-form-label">快捷键</label>
               <div class="col-sm-9">
-                <div class="form-check">
+                <div class="form-check" style="padding-left: 0;">
                   <p><kbd>Tab</kbd> 切换单词</p>
                 </div>
-                <div class="form-check">
+                <div class="form-check" style="padding-left: 0;">
                   <p><kbd>Enter</kbd> 查看单词详情</p>
                 </div>
-                <div class="form-check">
+                <div class="form-check" style="padding-left: 0;">
                   <p><kbd>Esc</kbd> 退出单词详情</p>
                 </div>
-                <div class="form-check">
+                <div class="form-check" style="padding-left: 0;">
                   <p><kbd>Ctrl+Shift+S</kbd>收藏/取消收藏单词（仅搜索场景）</p>
                 </div>
               </div>
             </div>
             <div class="form-group row">
-              <div style="margin: 0 auto">
+              <div style="margin: 0 auto; text-align: center; margin-top: 20px">
                 <button id="resetButton" type="button" class="btn btn-warning">
                   重置
                 </button>
@@ -287,5 +297,11 @@ onMounted(() => {
 <style scoped lang="scss">
 .container {
   padding-top: 40px;
+}
+.form-group.row {
+  margin-top: 10px;
+}
+.checkbox-row {
+  height: 28px;
 }
 </style>
