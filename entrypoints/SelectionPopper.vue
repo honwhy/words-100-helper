@@ -24,8 +24,9 @@ const showWordPopper = ref(false)
 const showArrow = ref(false)
 const holdingWidth = ref(15)
 const bingTranslateEnable = ref(false)
-// 展示icon还是直接展示翻译-根据配置来 TODO
+// 展示icon还是直接展示翻译-根据配置来
 // 如果是单词单字就采用百词斩翻译否则使用bing翻译
+// bing翻译并没有用上
 function handleSelection() {
   if (isPopoverVisible.value) {
     console.log('still in the last on popper')
