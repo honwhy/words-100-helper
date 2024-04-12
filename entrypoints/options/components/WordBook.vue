@@ -242,7 +242,9 @@ function openDetail(topicId: number) {
 
             <button
               id="wordbookRefreshButton" type="button" class="btn btn-primary"
-              style="margin-left: 10px; height: 36px; width: 36px; padding: 0" data-toggle="tooltip" title="刷新单词本显示最新内容" tabIndex="-1"
+              style="margin-left: 10px; height: 36px; width: 36px; padding: 0"
+              data-toggle="tooltip" title="刷新单词本显示最新内容"
+              @click="loadWordbookTable(true)"
             >
               <img style="width: 20px;" :src="refresh">
             </button>
