@@ -62,13 +62,17 @@ const chineseMeans = computed(() => {
   })
   return dataMap
 })
+function handleKeydown(event: KeyboardEvent) {
+  if (event.ctrlKey && event.shiftKey && event.key.toLowerCase() === 's')
+    favoriteWord()
+}
 </script>
 
 <template>
   <div id="detailDiv">
     <div class="section">
       <span class="word">{{ basicInfo?.word }}</span>
-      <span v-show="showIcon" id="starIcon" class="star" @click="favoriteWord">
+      <span v-show="showIcon" id="starIcon" class="star" @click="favoriteWord" @keydown="handleKeydown">
         <img :src="starIconSvg">
       </span>
       <br>
