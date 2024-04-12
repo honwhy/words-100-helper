@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
 import { isEmpty } from 'lodash-es'
+import { ElMessage } from 'element-plus'
 import type { UserBooks } from './hooks'
 import { useWordBook } from './hooks'
 import { defaultHost, defaultPort } from '@/utils/config'
@@ -26,7 +27,7 @@ function loadWordbook() {
     .catch(e => console.error('加载单词本失败', e))
 }
 const popoverStyle = ref('simple')
-const triggerMode = ref('triggerMode')
+const triggerMode = ref('showIcon')
 const host = ref('')
 const port = ref(8080)
 interface Settings {
@@ -74,14 +75,14 @@ function loadSettings() {
       if (isEmpty(host1))
         host.value = defaultHost
       else
-        host.value = host1
+        host.value = host1 as string
     })
   storageModule.get('port')
     .then((port1) => {
       if (!port1)
         port.value = defaultPort
       else
-        port.value = port1
+        port.value = port1 as number
     })
   storageModule.get('wordDetail')
     .then((wordDetailSettings) => {
@@ -89,20 +90,6 @@ function loadSettings() {
         ? Object.assign(defaultWordDetailSettings, wordDetailSettings)
         : defaultWordDetailSettings
       settings.value = settings1 as Settings
-      // if (settings.variantDisplay)
-      //   $('#showVariantCheck').prop('checked', true)
-      // if (settings.sentenceDisplay)
-      //   $('#showSentenceCheck').prop('checked', true)
-      // if (settings.shortPhrasesDisplay)
-      //   $('#showShortPhrasesCheck').prop('checked', true)
-      // if (settings.synonymsDisplay)
-      //   $('#showSynonymsCheck').prop('checked', true)
-      // if (settings.antonymsDisplay)
-      //   $('#showAntonymsCheck').prop('checked', true)
-      // if (settings.similarWordsDisplay)
-      //   $('#showSimilarWordsCheck').prop('checked', true)
-      // if (settings.englishParaphraseDisplay)
-      //   $('#showEnglishParaphraseCheck').prop('checked', true)
     })
 }
 function setup() {
@@ -114,6 +101,28 @@ function setup() {
     console.log('SettingContent got AUTHED')
     loadWordbook().finally(loadSettings)
   })
+}
+function reset() {
+  selectedBookId.value = 0
+  popoverStyle.value = 'simple'
+  triggerMode.value = 'showIcon'
+  // $('input[name="theme"]').first().prop('checked', true)
+  // $('#bingTransalteCheck').prop('checked', false)
+  settings.value = defaultWordDetailSettings
+  host.value = defaultHost
+  port.value = defaultPort
+}
+
+function save() {
+  storageModule.set('bookId', selectedBookId.value)
+  storageModule.set('popoverStyle', popoverStyle.value)
+  storageModule.set('triggerMode', triggerMode.value)
+  // storageModule.set('bingTranslateEnable', bingTranslateEnable);
+  // storageModule.set('theme', theme.value);
+  storageModule.set('host', host.value)
+  storageModule.set('port', port.value)
+  storageModule.set('wordDetail', settings.value)
+  ElMessage.success('保存成功')
 }
 onMounted(() => {
   setup()
@@ -135,6 +144,7 @@ onMounted(() => {
                   placeholder=""
                   style="padding: 0; height: 38px;width: 240px;"
                 >
+                  <el-option :value="0" label=" " disabled />
                   <el-option
                     v-for="item in options"
                     :key="item.value"
@@ -163,7 +173,7 @@ onMounted(() => {
             <div class="form-group row">
               <label class="col-sm-3 col-form-label">翻译时机</label>
               <div class="col-sm-9">
-                <el-radio-group v-model="triggerMode" direction="vertical">
+                <el-radio-group v-model="triggerMode" class="vertical-group">
                   <el-radio value="showIcon">
                     显示图标，点击翻译
                   </el-radio>
@@ -174,27 +184,6 @@ onMounted(() => {
                     永不翻译
                   </el-radio>
                 </el-radio-group>
-                <div class="form-check">
-                  <input
-                    id="showIconRadio" class="form-check-input" type="radio" name="triggerMode"
-                    value="showIcon" checked
-                  >
-                  <label class="form-check-label" for="showIconRadio">显示图标，点击翻译</label>
-                </div>
-                <div class="form-check">
-                  <input
-                    id="directRadio" class="form-check-input" type="radio" name="triggerMode"
-                    value="direct"
-                  >
-                  <label class="form-check-label" for="directRadio">直接翻译</label>
-                </div>
-                <div class="form-check">
-                  <input
-                    id="neverRadio" class="form-check-input" type="radio" name="triggerMode"
-                    value="never"
-                  >
-                  <label class="form-check-label" for="neverRadio">永不翻译</label>
-                </div>
               </div>
             </div>
             <div class="form-group row" style="display: none;">
@@ -211,10 +200,10 @@ onMounted(() => {
               <div class="col-sm-9">
                 <div class="form-check" style="padding-left: 0;">
                   <div class="checkbox-row">
-                    <el-checkbox v-model="settings.showVariant" label="单词变形" />
+                    <el-checkbox v-model="settings.variantDisplay" label="单词变形" />
                   </div>
                   <div class="checkbox-row">
-                    <el-checkbox v-model="settings.showExample" label="图文例句" />
+                    <el-checkbox v-model="settings.sentenceDisplay" label="图文例句" disabled />
                   </div>
                   <div class="checkbox-row">
                     <el-checkbox v-model="settings.shortPhrasesDisplay" label="短语" />
@@ -272,17 +261,17 @@ onMounted(() => {
                   <p><kbd>Esc</kbd> 退出单词详情</p>
                 </div>
                 <div class="form-check" style="padding-left: 0;">
-                  <p><kbd>Ctrl+Shift+S</kbd>收藏/取消收藏单词（仅搜索场景）</p>
+                  <p><kbd style="margin-right: 4px;">Ctrl+Shift+S</kbd>收藏/取消收藏单词（仅搜索场景）</p>
                 </div>
               </div>
             </div>
             <div class="form-group row">
               <div style="margin: 0 auto; text-align: center; margin-top: 20px">
-                <button id="resetButton" type="button" class="btn btn-warning">
+                <button id="resetButton" type="button" class="btn btn-warning" @click="reset">
                   重置
                 </button>
                                   &nbsp;&nbsp;
-                <button id="submitButton" type="button" class="btn btn-primary">
+                <button id="submitButton" type="button" class="btn btn-primary" @click="save">
                   保存
                 </button>
               </div>
@@ -297,6 +286,12 @@ onMounted(() => {
 <style scoped lang="scss">
 .container {
   padding-top: 40px;
+}
+.vertical-group {
+  :deep(.el-radio) {
+    display: block;
+    width: 100%;
+  }
 }
 .form-group.row {
   margin-top: 10px;

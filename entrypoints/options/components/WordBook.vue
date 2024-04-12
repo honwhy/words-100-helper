@@ -230,6 +230,7 @@ function openDetail(topicId: number) {
                 placeholder=""
                 style="padding: 0; height: 38px;"
               >
+                <el-option :value="0" label=" " disabled />
                 <el-option
                   v-for="item in options"
                   :key="item.value"
