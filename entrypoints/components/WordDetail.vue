@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { computed, ref } from 'vue'
 import { isNil } from 'lodash-es'
+import { useVModel } from '@vueuse/core'
 import Variants from './Variants.vue'
 import Sentences from './Sentences.vue'
 import starFill from '/svgs/star-fill.svg'
@@ -12,6 +13,7 @@ import Antonyms from './Antonyms.vue'
 import SimilarWords from './SimilarWords.vue'
 import EnglishParaphrases from './EnglishParaphrases.vue'
 import type { WordDetail } from '@/utils/models'
+import { cancelCollectWord, collectWord } from '@/utils/api'
 
 defineOptions({ name: 'WordDetail' })
 const props = withDefaults(defineProps<Props>(), {
@@ -21,13 +23,25 @@ interface Props {
   data: WordDetail
   showIcon?: boolean
 }
+const baseData = useVModel(props, 'data')
 const basicInfo = computed(() => {
-  return props.data.dict.word_basic_info
+  return baseData.value.dict.word_basic_info
 })
 const starIconSvg = computed(() => {
   return basicInfo.value?.__collected__ ? starFill : star
 })
+function favoriteWord() {
+  const fn = basicInfo.value?.__collected__ ? cancelCollectWord : collectWord
+  const tips = basicInfo.value?.__collected__ ? '取消收藏' : '收藏'
 
+  fn(props.data).then((response: unknown) => {
+    if (response != null)
+      baseData.value.dict.word_basic_info.__collected__ = !baseData.value.dict.word_basic_info.__collected__
+
+    console.log(`${tips}失败`)
+  })
+    .catch((e: any) => console.error(`${tips}异常`, e))
+}
 const resourceDomain = 'https://7n.bczcdn.com'
 const accentUkAudio = ref<HTMLAudioElement>()
 const accentUsaAudio = ref<HTMLAudioElement>()
@@ -54,7 +68,7 @@ const chineseMeans = computed(() => {
   <div id="detailDiv">
     <div class="section">
       <span class="word">{{ basicInfo?.word }}</span>
-      <span v-if="showIcon" id="starIcon" class="star">
+      <span v-show="showIcon" id="starIcon" class="star" @click="favoriteWord">
         <img :src="starIconSvg">
       </span>
       <br>

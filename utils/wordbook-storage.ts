@@ -1,4 +1,5 @@
 import { storage } from 'wxt/storage'
+import { WordDetail } from './models'
 /**
  * 静态方法实现，则每次读取全部的 storage 内容（并回写）
  * 缺点：数据写入写出频繁，效率低
@@ -42,7 +43,8 @@ const add = function (bookId: number, word: any) {
   return new Promise((resolve) => {
     load(bookId)
       .then((wordbook) => {
-        const topicIdSet = new Set(wordbook.map(word => word.topic_id))
+        const wordList = wordbook as unknown as Word[]
+        const topicIdSet = new Set(wordList.map(word => word.topic_id))
 
         if (!topicIdSet.has(word.topic_id)) {
           wordbook.push(word)
@@ -61,7 +63,8 @@ const remove = function (bookId: number, topicId: number) {
   return new Promise((resolve) => {
     load(bookId)
       .then((wordbook) => {
-        const filteredWordbook = wordbook.filter(word => word.topic_id !== topicId)
+        const wordList = wordbook as unknown as Word[]
+        const filteredWordbook = wordList.filter(word => word.topic_id !== topicId)
 
         save(bookId, filteredWordbook)
         resolve(true)
@@ -73,7 +76,11 @@ const contains = function (bookId: number, topicId: number) {
   return new Promise((resolve) => {
     load(bookId)
       .then((wordbook) => {
-        const topicIdSet = new Set(wordbook.map(word => word.topic_id))
+        const data = wordbook.map((it) => {
+          const word = it as unknown as Word
+          return word.topic_id
+        })
+        const topicIdSet = new Set(data)
 
         resolve(topicIdSet.has(topicId))
       })

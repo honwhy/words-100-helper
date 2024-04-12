@@ -1,3 +1,4 @@
+import { isNil } from 'lodash-es'
 import type { WordDetail } from './models'
 import storageModule from './storage'
 import WordbookStorage from './wordbook-storage'
@@ -53,8 +54,8 @@ export function getWordDetail(topicId: number) {
       headers: { access_token: accessToken },
     })
   })
-  // .then(fillCollectedField)
-  // .then(console.log)
+    .then(fillCollectedField)
+    // .then(console.log)
 }
 async function fillCollectedField(res: unknown) {
   const data = res as WordDetail
@@ -148,7 +149,59 @@ async function removeWord(data: unknown, topicId: number) {
 
   return data
 }
-export function cancelCollectWord(topicId: number) {
+async function addWord(word: WordDetail, data: unknown) {
+  const wordInfo = word.dict.word_basic_info
+  const chineseMeans: Record<string, string[]> = {}
+  word.dict.chn_means.forEach((it) => {
+    let array = chineseMeans[it.mean_type]
+    if (isNil(array))
+      array = []
+    array.push(it.mean)
+    chineseMeans[it.mean_type] = array
+  })
+  const meanString = Object.entries(chineseMeans)
+    .map(([k, v]) => `${k} ${v.join('；')}`)
+    .join('； ')
+  const bookId = await getWordbookId()
+
+  WordbookStorage.add(bookId, {
+    audio_uk: wordInfo.accent_uk_audio_uri,
+    audio_us: wordInfo.accent_usa_audio_uri,
+    book_id: bookId,
+    mean: meanString,
+    setAudio_uk: true,
+    setAudio_us: true,
+    setBook_id: true,
+    setCreated_at: true,
+    setMean: true,
+    setTopic_id: true,
+    setWord: true,
+    topic_id: wordInfo.topic_id,
+    word: wordInfo.word,
+  })
+
+  return data
+}
+export function collectWord(word: WordDetail) {
+  const topicId = word.dict.word_basic_info.topic_id
+
+  return Promise.all([
+    loadRequestOptions(),
+    getWordbookId(),
+  ])
+    .then(([[host, port, accessToken], bookId]) => {
+      const url = `http://${host}:${port}/book/${bookId}/word/${topicId}`
+
+      return sendRequest({
+        url,
+        method: 'PUT',
+        headers: { access_token: accessToken },
+      })
+    })
+    .then(async data => addWord(word, data))
+}
+export function cancelCollectWord(word: WordDetail) {
+  const topicId = word.dict.word_basic_info.topic_id
   return Promise.all([
     loadRequestOptions(),
     getWordbookId(),

@@ -87,7 +87,7 @@ provide('refreshWordDetail', refreshWordDetail)
       </tbody>
     </table>
     <!-- 单词详情 -->
-    <WordDetailComp v-if="showDataDetail && dataDetail" :data="dataDetail" />
+    <WordDetailComp v-if="showDataDetail && dataDetail" :data="dataDetail" :show-icon="dataDetail.dict.word_basic_info.__collected__" />
   </div>
 </template>
 
