@@ -13,3 +13,13 @@ export interface LabelOption {
   value: string
   label: string
 }
+
+export interface Settings {
+  variantDisplay: boolean
+  sentenceDisplay: boolean
+  shortPhrasesDisplay: boolean
+  synonymsDisplay: boolean
+  antonymsDisplay: boolean
+  similarWordsDisplay: boolean
+  englishParaphraseDisplay: boolean
+}

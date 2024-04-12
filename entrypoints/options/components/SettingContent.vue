@@ -4,11 +4,12 @@ import { isEmpty } from 'lodash-es'
 import { ElMessage } from 'element-plus'
 import type { UserBooks } from './hooks'
 import { useWordBook } from './hooks'
-import { defaultHost, defaultPort } from '@/utils/config'
+import { defaultHost, defaultPort, defaultWordDetailSettings } from '@/utils/config'
 import EventBus from '@/utils/eventBus'
 import Events from '@/utils/events'
 import storageModule from '@/utils/storage'
 import { getBooks } from '@/utils/api'
+import type { Settings } from '@/utils/types'
 
 defineOptions({ name: 'SettingContent' })
 const { selectedBookId, options } = useWordBook()
@@ -30,24 +31,7 @@ const popoverStyle = ref('simple')
 const triggerMode = ref('showIcon')
 const host = ref('')
 const port = ref(8080)
-interface Settings {
-  variantDisplay: boolean
-  sentenceDisplay: boolean
-  shortPhrasesDisplay: boolean
-  synonymsDisplay: boolean
-  antonymsDisplay: boolean
-  similarWordsDisplay: boolean
-  englishParaphraseDisplay: boolean
-}
-const defaultWordDetailSettings = {
-  variantDisplay: false,
-  sentenceDisplay: true,
-  shortPhrasesDisplay: false,
-  synonymsDisplay: false,
-  antonymsDisplay: false,
-  similarWordsDisplay: false,
-  englishParaphraseDisplay: false,
-}
+
 const settings = ref<Settings>(defaultWordDetailSettings)
 function loadSettings() {
   storageModule.get('popoverStyle')

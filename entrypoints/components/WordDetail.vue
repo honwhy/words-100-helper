@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { computed, ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { isNil } from 'lodash-es'
 import { useVModel } from '@vueuse/core'
 import Variants from './Variants.vue'
@@ -14,6 +14,9 @@ import SimilarWords from './SimilarWords.vue'
 import EnglishParaphrases from './EnglishParaphrases.vue'
 import type { WordDetail } from '@/utils/models'
 import { cancelCollectWord, collectWord } from '@/utils/api'
+import storageModule from '@/utils/storage'
+import type { Settings } from '@/utils/types'
+import { defaultWordDetailSettings } from '@/utils/config'
 
 defineOptions({ name: 'WordDetail' })
 const props = withDefaults(defineProps<Props>(), {
@@ -66,6 +69,19 @@ function handleKeydown(event: KeyboardEvent) {
   if (event.ctrlKey && event.shiftKey && event.key.toLowerCase() === 's')
     favoriteWord()
 }
+const settings = ref<Settings>(defaultWordDetailSettings)
+function loadSettings() {
+  storageModule.get('wordDetail')
+    .then((wordDetailSettings) => {
+      const settings1 = wordDetailSettings
+        ? Object.assign(defaultWordDetailSettings, wordDetailSettings)
+        : defaultWordDetailSettings
+      settings.value = settings1 as Settings
+    })
+}
+onMounted(() => {
+  loadSettings()
+})
 </script>
 
 <template>
@@ -101,13 +117,13 @@ function handleKeydown(event: KeyboardEvent) {
         </tr>
       </table>
     </div>
-    <Variants v-if="data.dict.variant_info" :data="data.dict.variant_info" />
-    <Sentences v-if="data.dict.sentences" :data="data.dict.sentences" :word="basicInfo.word" />
-    <ShortPhrases v-if="data.dict.short_phrases" :data="data.dict.short_phrases" />
-    <Synonyms v-if="data.dict.synonyms" :data="data.dict.synonyms" />
-    <Antonyms v-if="data.dict.antonyms" :data="data.dict.antonyms" />
-    <SimilarWords v-if="data.similar_words" :data="data.similar_words" />
-    <EnglishParaphrases v-if="data.dict.en_means" :data="data.dict.en_means" />
+    <Variants v-if="data.dict.variant_info && settings.variantDisplay" :data="data.dict.variant_info" />
+    <Sentences v-if="data.dict.sentences && settings.sentenceDisplay" :data="data.dict.sentences" :word="basicInfo.word" />
+    <ShortPhrases v-if="data.dict.short_phrases && settings.shortPhrasesDisplay" :data="data.dict.short_phrases" />
+    <Synonyms v-if="data.dict.synonyms && settings.synonymsDisplay" :data="data.dict.synonyms" />
+    <Antonyms v-if="data.dict.antonyms && settings.antonymsDisplay" :data="data.dict.antonyms" />
+    <SimilarWords v-if="data.similar_words && settings.similarWordsDisplay" :data="data.similar_words" />
+    <EnglishParaphrases v-if="data.dict.en_means && settings.englishParaphraseDisplay" :data="data.dict.en_means" />
   </div>
 </template>
 
