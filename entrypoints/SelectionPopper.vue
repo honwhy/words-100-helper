@@ -68,8 +68,8 @@ function handleMouseUp(event: MouseEvent) {
       const range = selection!.getRangeAt(0)
       const rect = range.getBoundingClientRect()
       // 考虑滚动偏移
-      rect.x += window.scrollX
-      rect.y += window.scrollY
+      // rect.x += window.scrollX
+      // rect.y += window.scrollY
       return rect
     }
     handleSelection()
@@ -85,11 +85,13 @@ const iconSrc = ref(browser.runtime.getURL('/icon.png'))
 // 在弹出层出现前更新其位置，确保跟随所选文本附近的鼠标位置
 function onBeforeEnter() {
   console.log('onBeforeEnter', popoverRef, selectedTextRef)
+  console.log('onBeforeEnter', showIcon.value, showWordPopper.value, selectedText.value)
 }
 
 // 弹出层消失后重置相关状态
 function onAfterLeave() {
   // selectedText.value = ''
+  console.log('onAfterLeave')
 }
 
 // 在组件挂载时添加必要的监听器
@@ -171,29 +173,32 @@ function isPointerInRect(event: PointerEvent, rect: DOMRect | undefined): boolea
   )
 }
 function cleanup() {
+  console.log('clean outside and cleanup')
   isPopoverVisible.value = false
   showIcon.value = false
   showWordPopper.value = false
   selectedText.value = ''
-  selectedTextRef.value!.getBoundingClientRect = () => {
-    const rect = document.body.getBoundingClientRect()
-    const cloned = cloneDeep(rect)
-    Object.assign(cloned, {
-      x: 0,
-      y: 0,
-      top: 0,
-      left: 0,
-      bottom: 0,
-      right: 0,
-      width: 0,
-      height: 0,
-    })
-    return cloned
-  }
+  // selectedTextRef.value!.getBoundingClientRect = () => {
+  //   const rect = document.body.getBoundingClientRect()
+  //   const cloned = cloneDeep(rect)
+  //   Object.assign(cloned, {
+  //     x: 0,
+  //     y: 0,
+  //     top: 0,
+  //     left: 0,
+  //     bottom: 0,
+  //     right: 0,
+  //     width: 0,
+  //     height: 0,
+  //   })
+  //   return cloned
+  // }
 }
 const iconRef = ref<HTMLDivElement>()
 const wordPopperRef = ref<HTMLDivElement>()
 onClickOutside(popoverRef, (event) => {
+  if (selectedText.value === '')
+    return
   if (isPointerInRect(event, selectedTextRef.value?.getBoundingClientRect())) {
     console.log('pointer on top of selected text')
     return
@@ -218,8 +223,9 @@ onClickOutside(popoverRef, (event) => {
   <!-- el-popover 组件 -->
   <el-popover
     ref="popoverRef"
-    v-model:visible="isPopoverVisible"
+    :visible="isPopoverVisible"
     placement="bottom-start"
+    append-to-body
     :popper-class="{ customPopperClass: showIcon }"
     :show-arrow="showArrow"
     :hide-after="1000000"
@@ -230,12 +236,12 @@ onClickOutside(popoverRef, (event) => {
     <!-- icon 区域 -->
     <div v-if="showIcon" ref="iconRef" name="__baicizhanHelperIconTips__" @click="onClick">
       <div style="width: 25px; height: 25px;">
-        <img v-if="showIcon" :src="iconSrc" style="max-width: 25px; border-radius: 5px; opacity: 0.8; cursor: pointer;">
+        <img :src="iconSrc" style="max-width: 25px; border-radius: 5px; opacity: 0.8; cursor: pointer;">
       </div>
     </div>
     <!-- 单词区域 -->
-    <div v-if="showWordPopper" ref="wordPopperRef">
-      <WordPopper v-if="showWordPopper && dict" :data="dict" :show-style="showStyle" />
+    <div v-if="showWordPopper && dict" ref="wordPopperRef">
+      <WordPopper :data="dict" :show-style="showStyle" />
     </div>
     <!-- bing翻译 -->
     <template #reference>
