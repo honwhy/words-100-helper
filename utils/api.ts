@@ -236,3 +236,16 @@ export function getBooks() {
     })
   })
 }
+
+export function translate(phrase: string) {
+  return loadRequestOptions().then(([host, port, accessToken]) => {
+    const encodePrharse = encodeURIComponent(phrase)
+    const url = `http://${host}:${port}/translate?text=${encodePrharse}`
+
+    return sendRequest({
+      url,
+      method: 'GET',
+      headers: { access_token: accessToken },
+    })
+  })
+}

@@ -1,4 +1,4 @@
-import { cancelCollectWord, collectWord, getWordInfo } from '@/utils/api'
+import { cancelCollectWord, collectWord, getWordInfo, translate } from '@/utils/api'
 import storageModule from '@/utils/storages'
 
 export const actions = {
@@ -6,4 +6,5 @@ export const actions = {
   getStorageInfo: storageModule.getStorageInfo,
   cancelCollectWord,
   collectWord,
+  translate,
 } as const
