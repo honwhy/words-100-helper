@@ -59,7 +59,7 @@ function favoriteWord() {
       console.error(`${tips}异常`, e)
       ElMessageBox.confirm(
         `${tips}异常，请重新登录`,
-        'Warning',
+        '提示',
         {
           confirmButtonText: '去登录',
           cancelButtonText: '关闭',
