@@ -6,8 +6,8 @@ import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
 
 // See https://wxt.dev/api/config.html
 export default defineConfig({
-  manifest: {
-    permissions: ['storage', 'http://110.42.229.221/*'],
+  manifest: ({ browser }) => ({
+    permissions: browser === 'firefox' ? ['storage', 'http://110.42.229.221/*'] : ['storage'],
     host_permissions: [
       'http://110.42.229.221/*',
     ],
@@ -17,7 +17,7 @@ export default defineConfig({
         matches: ['<all_urls>'],
       },
     ],
-  },
+  }),
   imports: {
     addons: {
       vueTemplate: true,
