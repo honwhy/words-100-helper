@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue'
+import { computed, onMounted, ref, watch } from 'vue'
 import { ElMessage } from 'element-plus'
 import WordDetailComp from '../../components/WordDetail.vue'
 import { useWordBook } from './hooks'
@@ -90,6 +90,12 @@ function generateWordbookTable(res: unknown) {
   words.value = data
 //   data.forEach((item, index) => generateWordRow(item, $tbody, index, englishMasked, meansMasked))
 }
+watch(() => order.value, () => {
+  const data = words.value
+  const sortFn = sortFns[order.value as Keys] || sortFns.collectTimeDescOrder
+  data.sort(sortFn)
+  words.value = data
+})
 const loading = ref(false)
 async function loadWordbookTable(focus: boolean) {
   const bookId = selectedBookId.value
@@ -328,9 +334,9 @@ function onChange() {
     </div>
   </div>
   <!-- 单词详情 -->
-  <div class="container">
+  <el-dialog v-model="showDataDetail" class="container" width="450px">
     <WordDetailComp v-if="showDataDetail && dataDetail" :data="dataDetail" />
-  </div>
+  </el-dialog>
 </template>
 
 <style scoped lang="scss">
