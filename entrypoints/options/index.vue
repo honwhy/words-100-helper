@@ -15,6 +15,7 @@ const activeName = ref('wordbookTabContent')
 function handleClick() {}
 const nickname = ref('游客用户')
 const githubMark = ref(browser.runtime.getURL('/github-mark.png'))
+const logo = ref(browser.runtime.getURL('/b-logo.png'))
 async function setup() {
   const accessToken = await storageModule.get('accessToken')
   if (isEmpty(accessToken))
@@ -35,6 +36,9 @@ onMounted(() => {
 
 <template>
   <div class="my-tabs">
+    <el-button text class="custom-tabs-label" style="height: 80px;">
+      <img style="height: 40px;" :src="logo">
+    </el-button>
     <el-tabs v-model="activeName" type="card" class="menu-tabs" @tab-click="handleClick">
       <el-tab-pane label="单词本" name="wordbookTabContent">
         <template #label>
@@ -71,7 +75,7 @@ onMounted(() => {
       </template>
     </el-dropdown>
     <el-button text class="custom-tabs-label">
-      <a href="https://github.com/honwhy/words-100-helper" target="_blank" title="项目首页">
+      <a href="https://github.com/honwhy/words-100-helper" target="_blank" title="">
         <img style="width: 40px;" :src="githubMark">
       </a>
     </el-button>

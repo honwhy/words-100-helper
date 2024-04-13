@@ -79,7 +79,7 @@ provide('refreshWordDetail', refreshWordDetail)
           <td>
             <span class="searchWord">{{ data.word }}</span> &nbsp;&nbsp;
             <span class="searchAccent">{{ data.accent }}</span>
-            <span class="searchMeans" :title="data.mean_cn">{{ data.mean_cn }}</span>
+            <span class="searchMeans">{{ data.mean_cn }}</span>
           </td>
         </tr>
         <tr v-if="dataList.length === 0">
