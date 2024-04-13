@@ -13,7 +13,7 @@ export default defineConfig({
     ],
     web_accessible_resources: [
       {
-        resources: ['*.png', '*.svg'],
+        resources: ['*.png', '*.svg', '*.txt'],
         matches: ['<all_urls>'],
       },
     ],
