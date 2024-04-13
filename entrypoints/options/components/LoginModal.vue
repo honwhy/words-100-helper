@@ -6,7 +6,7 @@ import { debounce, isEmpty } from 'lodash-es'
 import EventBus from '@/utils/eventBus'
 import Events from '@/utils/events'
 import { getUserInfo, loginWithEmail } from '@/utils/api'
-import storageModule from '@/utils/storage'
+import storageModule from '@/utils/storages'
 
 defineOptions({ name: 'LoginModal' })
 

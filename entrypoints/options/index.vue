@@ -7,7 +7,7 @@ import Usage from './components/Usage.vue'
 import SettingContent from './components/SettingContent.vue'
 import WordBook from './components/WordBook.vue'
 import LoginModal from './components/LoginModal.vue'
-import storageModule from '@/utils/storage'
+import storageModule from '@/utils/storages'
 import Events from '@/utils/events'
 import EventBus from '@/utils/eventBus'
 
@@ -77,10 +77,10 @@ onMounted(() => {
     </el-button>
   </div>
   <!-- tab内容 -->
-  <div v-if="activeName === 'wordbookTabContent'" class="html-container">
+  <div v-show="activeName === 'wordbookTabContent'" class="html-container">
     <WordBook />
   </div>
-  <div v-if="activeName === 'settingTabContent'" class="html-container">
+  <div v-show="activeName === 'settingTabContent'" class="html-container">
     <SettingContent />
   </div>
   <div v-if="activeName === 'usage'" class="html-container">

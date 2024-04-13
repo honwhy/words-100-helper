@@ -1,9 +1,12 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
-
-import { isNil } from 'lodash-es'
+import { ElMessage, ElMessageBox } from 'element-plus'
+import 'element-plus/es/components/message/style/css' // 引入 ElMessage 的样式
+import 'element-plus/es/components/message-box/style/css' // 引入 ElMessageBox 的样式
+import { cloneDeep, isNil } from 'lodash-es'
 import levenshtein from 'js-levenshtein-esm'
 import { stemmer } from 'stemmer'
+import { useVModel } from '@vueuse/core'
 import type { Dict } from '@/utils/models'
 
 defineOptions({ name: 'WordPopper' })
@@ -12,6 +15,7 @@ interface Props {
   data: Dict
   showStyle: string
 }
+const baseData = useVModel(props, 'data')
 const starFill = ref(browser.runtime.getURL('/svgs/star-fill.svg'))
 const star = ref(browser.runtime.getURL('/svgs/star.svg'))
 const volumeup = ref(browser.runtime.getURL('/svgs/volume-up.svg'))
@@ -39,6 +43,44 @@ const sentence = computed(() => {
 
   return element
 })
+function favoriteWord() {
+  console.log('on favorite word', props.data)
+  const fn = props.data.word_basic_info?.__collected__ ? 'cancelCollectWord' : 'collectWord'
+  const tips = props.data.word_basic_info?.__collected__ ? '取消收藏' : '收藏'
+  const args = cloneDeep(props.data)
+  const option = { action: fn, args }
+  browser.runtime.sendMessage(undefined, option)
+    .then((result) => {
+      console.log('result', result, tips, baseData.value)
+      baseData.value.word_basic_info.__collected__ = !baseData.value.word_basic_info.__collected__
+      ElMessage.success(`${tips}成功`)
+    })
+    .catch((e) => {
+      console.error(`${tips}异常`, e)
+      ElMessageBox.confirm(
+        `${tips}异常，请重新登录`,
+        'Warning',
+        {
+          confirmButtonText: '去登录',
+          cancelButtonText: '关闭',
+          type: 'warning',
+          center: true,
+        },
+      )
+        .then(() => {
+          browser.runtime.openOptionsPage()
+        })
+        .catch(() => {})
+    })
+
+  // fn(props.data).then((response: unknown) => {
+  //   if (response != null)
+  //     baseData.value.word_basic_info.__collected__ = !baseData.value.word_basic_info.__collected__
+
+  //   console.log(`${tips}失败`)
+  // })
+  //   .catch((e: any) => console.error(`${tips}异常`, e))
+}
 function highlight(sentence: Sentence, word: string) {
   if (sentence.highlight_phrase) {
     return sentence.sentence.replace(
@@ -93,7 +135,7 @@ const sentenceAudio = ref<HTMLAudioElement>()
       <h3 class="webui-popover-title">
         <p class="title">
           <span class="word">{{ data.word_basic_info.word }}</span>
-          <span id="starIcon" class="star">
+          <span id="starIcon" class="star" @click.stop="favoriteWord">
             <img :src="svg">
           </span>
         </p>

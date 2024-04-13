@@ -1,5 +1,4 @@
-import { storage } from 'wxt/storage'
-
+// utils/storages.ts
 const namespace = 'baicizhan-helper'
 
 function get(arg: string | string[]) {

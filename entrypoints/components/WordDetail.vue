@@ -2,6 +2,9 @@
 import { computed, onMounted, ref } from 'vue'
 import { isNil } from 'lodash-es'
 import { useVModel } from '@vueuse/core'
+import { ElMessage, ElMessageBox } from 'element-plus'
+import 'element-plus/es/components/message/style/css' // 引入 ElMessage 的样式
+import 'element-plus/es/components/message-box/style/css' // 引入 ElMessageBox 的样式
 import Variants from './Variants.vue'
 import Sentences from './Sentences.vue'
 import starFill from '/svgs/star-fill.svg'
@@ -14,7 +17,7 @@ import SimilarWords from './SimilarWords.vue'
 import EnglishParaphrases from './EnglishParaphrases.vue'
 import type { WordDetail } from '@/utils/models'
 import { cancelCollectWord, collectWord } from '@/utils/api'
-import storageModule from '@/utils/storage'
+import storageModule from '@/utils/storages'
 import type { Settings } from '@/utils/types'
 import { defaultWordDetailSettings } from '@/utils/config'
 
@@ -34,16 +37,39 @@ const starIconSvg = computed(() => {
   return basicInfo.value?.__collected__ ? starFill : star
 })
 function favoriteWord() {
+  console.log('on favorite word', props.data)
   const fn = basicInfo.value?.__collected__ ? cancelCollectWord : collectWord
   const tips = basicInfo.value?.__collected__ ? '取消收藏' : '收藏'
 
-  fn(props.data).then((response: unknown) => {
-    if (response != null)
+  fn(baseData.value.dict).then((response: unknown) => {
+    if (response != null) {
       baseData.value.dict.word_basic_info.__collected__ = !baseData.value.dict.word_basic_info.__collected__
+      ElMessage({
+        type: 'success',
+        message: `${tips}成功`,
+      })
+      return
+    }
 
     console.log(`${tips}失败`)
   })
-    .catch((e: any) => console.error(`${tips}异常`, e))
+    .catch((e: any) => {
+      console.error(`${tips}异常`, e)
+      ElMessageBox.confirm(
+        `${tips}异常，请重新登录`,
+        'Warning',
+        {
+          confirmButtonText: '去登录',
+          cancelButtonText: '关闭',
+          type: 'warning',
+          center: true,
+        },
+      )
+        .then(() => {
+          browser.runtime.openOptionsPage()
+        })
+        .catch(() => {})
+    })
 }
 const resourceDomain = 'https://7n.bczcdn.com'
 const accentUkAudio = ref<HTMLAudioElement>()
@@ -88,7 +114,7 @@ onMounted(() => {
   <div id="detailDiv">
     <div class="section">
       <span class="word">{{ basicInfo?.word }}</span>
-      <span v-show="showIcon" id="starIcon" class="star" @click="favoriteWord" @keydown="handleKeydown">
+      <span v-show="showIcon" id="starIcon" class="star" @click.stop="favoriteWord" @keydown="handleKeydown">
         <img :src="starIconSvg">
       </span>
       <br>

@@ -1,5 +1,5 @@
 import { cancelCollectWord, collectWord, getWordInfo } from '@/utils/api'
-import storageModule from '@/utils/storage'
+import storageModule from '@/utils/storages'
 
 export const actions = {
   getWordInfo,

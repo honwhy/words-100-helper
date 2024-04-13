@@ -5,10 +5,9 @@ import WordDetailComp from '../../components/WordDetail.vue'
 import { useWordBook } from './hooks'
 import EventBus from '@/utils/eventBus'
 import Events from '@/utils/events'
-import storageModule from '@/utils/storage'
-import type { LabelOption } from '@/utils/types'
+import storageModule from '@/utils/storages'
 import WordbookStorage from '@/utils/wordbook-storage'
-import { getBookWords, getWordDetail } from '@/utils/api'
+import { cancelCollectWordById, getBookWords, getWordDetail } from '@/utils/api'
 
 defineOptions({ name: 'WordBook' })
 const resourceDomain = 'https://7n.bczcdn.com'
@@ -101,8 +100,11 @@ async function loadWordbookTable(focus: boolean) {
     const wordbookData = focus
       ? await loadFromServer(id)
       : await loadFromLocal(id) || await loadFromServer(id)
-
+    console.log('wordbookData', wordbookData)
     generateWordbookTable(wordbookData)
+    if (focus)
+      EventBus.emit(Events.BOOKS_LOADED)
+
     loading.value = false
   }
   catch (e) {
@@ -140,6 +142,7 @@ function setup() {
   //   generateWordbooks(data)
   // })
 }
+const audioContext = ref(new window.AudioContext())
 onMounted(() => {
   setup()
 })
@@ -147,7 +150,7 @@ const starFill = ref(browser.runtime.getURL('/svgs/star-fill.svg'))
 async function removeWord(topicId: number, index: number) {
   let successful
   try {
-    successful = await cancelCollectWord(topicId)
+    successful = await cancelCollectWordById(topicId)
   }
   catch (e) {
     successful = false
@@ -162,14 +165,10 @@ async function removeWord(topicId: number, index: number) {
 //   WordbookStorage.remove(topicId)
 }
 const volumeup = ref(browser.runtime.getURL('/svgs/volume-up.svg'))
-let audioContext: AudioContext | null = null
 let audioBinaryData: ArrayBuffer | null = null
 let currentAudioSrc = ''
 function getAudioContext() {
-  if (audioContext)
-    return audioContext
-
-  audioContext = new window.AudioContext()
+  return audioContext.value
 }
 function createAudioAndPlay(binaryData: ArrayBuffer) {
   const context = getAudioContext()
@@ -215,13 +214,16 @@ function openDetail(topicId: number) {
       // generateErrorTips($('#detailDiv'))
     })
 }
+function onChange() {
+  loadWordbookTable(true)
+}
 </script>
 
 <template>
   <div id="wordbookTabContent" class="tab-pane fade show active" role="tabpanel" aria-labelledby="wordbookTab">
     <div class="container">
       <div class="row">
-        <div class="col-sm-8 offset-sm-2">
+        <div class="col-sm-8">
           <div class="row" style="margin: 20px 0;">
             <div class="col-sm-5" style="padding: 0">
               <el-select
@@ -229,8 +231,9 @@ function openDetail(topicId: number) {
                 v-model="selectedBookId"
                 placeholder=""
                 style="padding: 0; height: 38px;"
+                @change="onChange"
               >
-                <el-option :value="0" label=" " disabled />
+                <el-option v-if="options.length === 0" :value="0" label=" " disabled />
                 <el-option
                   v-for="item in options"
                   :key="item.value"
@@ -325,7 +328,9 @@ function openDetail(topicId: number) {
     </div>
   </div>
   <!-- 单词详情 -->
-  <WordDetailComp v-if="showDataDetail && dataDetail" :data="dataDetail" />
+  <div class="container">
+    <WordDetailComp v-if="showDataDetail && dataDetail" :data="dataDetail" />
+  </div>
 </template>
 
 <style scoped lang="scss">

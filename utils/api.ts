@@ -1,6 +1,6 @@
 import { isNil } from 'lodash-es'
-import type { WordDetail } from './models'
-import storageModule from './storage'
+import type { Dict, WordDetail } from './models'
+import storageModule from './storages'
 import WordbookStorage from './wordbook-storage'
 import { defaultHost, defaultPort } from './config'
 
@@ -45,6 +45,7 @@ export function searchWord(word: string) {
 }
 
 export function getWordDetail(topicId: number) {
+  console.log('getWordDetail->topicId', topicId)
   return loadRequestOptions().then(([host, port, accessToken]) => {
     const url = `http://${host}:${port}/word/${topicId}`
 
@@ -64,7 +65,7 @@ async function fillCollectedField(res: unknown) {
   const collected = await WordbookStorage.contains(bookId, topicId)
 
   data.dict.word_basic_info.__collected__ = collected as boolean
-
+  console.log('fillCollectedField->data', data)
   return data
 }
 async function getWordbookId() {
@@ -74,6 +75,7 @@ async function getWordbookId() {
 
 export function getWordInfo(word: string) {
   return searchWord(word).then((res) => {
+    console.log('getWordInfo->searchWord.return', res)
     const data = (res ?? []) as Word[]
     const bestMatch = data[0]
     const topicId = bestMatch?.topic_id
@@ -149,10 +151,10 @@ async function removeWord(data: unknown, topicId: number) {
 
   return data
 }
-async function addWord(word: WordDetail, data: unknown) {
-  const wordInfo = word.dict.word_basic_info
+async function addWord(word: Dict, data: unknown) {
+  const wordInfo = word.word_basic_info
   const chineseMeans: Record<string, string[]> = {}
-  word.dict.chn_means.forEach((it) => {
+  word.chn_means.forEach((it) => {
     let array = chineseMeans[it.mean_type]
     if (isNil(array))
       array = []
@@ -182,8 +184,9 @@ async function addWord(word: WordDetail, data: unknown) {
 
   return data
 }
-export function collectWord(word: WordDetail) {
-  const topicId = word.dict.word_basic_info.topic_id
+export function collectWord(word: Dict) {
+  console.log('collectWord', word)
+  const topicId = word.word_basic_info.topic_id
 
   return Promise.all([
     loadRequestOptions(),
@@ -200,8 +203,7 @@ export function collectWord(word: WordDetail) {
     })
     .then(async data => addWord(word, data))
 }
-export function cancelCollectWord(word: WordDetail) {
-  const topicId = word.dict.word_basic_info.topic_id
+export function cancelCollectWordById(topicId: number) {
   return Promise.all([
     loadRequestOptions(),
     getWordbookId(),
@@ -216,6 +218,11 @@ export function cancelCollectWord(word: WordDetail) {
       })
     })
     .then(async data => removeWord(data, topicId))
+}
+export function cancelCollectWord(word: Dict) {
+  console.log('cancelCollectWordById', word)
+  const topicId = word.word_basic_info.topic_id
+  return cancelCollectWordById(topicId)
 }
 
 export function getBooks() {

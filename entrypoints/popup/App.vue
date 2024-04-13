@@ -34,17 +34,18 @@ function doSearch() {
     })
 }
 function refreshWordDetail(topicId: number) {
+  console.log('refreshWordDetail.topicId=>', topicId)
   showDataDetail.value = false
   getWordDetail(topicId)
     .then((data) => {
-      console.log(data)
+      console.log('getWordDetail', data)
       dataDetail.value = data as WordDetail
       showDataList.value = false
       showDataDetail.value = true
       // generateWordDetail(data, $('#detailDiv'), data.dict.word_basic_info.__collected__)
     })
     .catch((e) => {
-      console.error(e)
+      console.error('getWordDetail', e)
       // generateErrorTips($('#detailDiv'))
     })
 }
@@ -78,7 +79,7 @@ provide('refreshWordDetail', refreshWordDetail)
           <td>
             <span class="searchWord">{{ data.word }}</span> &nbsp;&nbsp;
             <span class="searchAccent">{{ data.accent }}</span>
-            <span class="searchMeans" title="${data.mean_cn}">{{ data.mean_cn }}</span>
+            <span class="searchMeans" :title="data.mean_cn">{{ data.mean_cn }}</span>
           </td>
         </tr>
         <tr v-if="dataList.length === 0">
@@ -87,11 +88,25 @@ provide('refreshWordDetail', refreshWordDetail)
       </tbody>
     </table>
     <!-- 单词详情 -->
-    <WordDetailComp v-if="showDataDetail && dataDetail" :data="dataDetail" :show-icon="dataDetail.dict.word_basic_info.__collected__" />
+    <WordDetailComp v-if="showDataDetail && dataDetail" :data="dataDetail" />
   </div>
 </template>
 
 <style lang="scss">
+/* 移除 hover 状态下的边框 */
+.el-button:hover {
+  border-color: transparent !important;
+}
+
+/* 移除 focus 状态下的边框 */
+.el-button:focus {
+  outline: none !important; /* 可能还需要调整 box-shadow 或 border-color */
+}
+
+/* 移除 active 状态下的边框 */
+.el-button:active {
+  border-color: transparent !important;
+}
 /* 美化滚动条整体样式 */
 ::-webkit-scrollbar {
   width: 12px; /* 滚动条宽度 */

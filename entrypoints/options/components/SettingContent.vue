@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
-import { isEmpty } from 'lodash-es'
+import { cloneDeep, isEmpty } from 'lodash-es'
 import { ElMessage } from 'element-plus'
 import type { UserBooks } from './hooks'
 import { useWordBook } from './hooks'
 import { defaultHost, defaultPort, defaultWordDetailSettings } from '@/utils/config'
 import EventBus from '@/utils/eventBus'
 import Events from '@/utils/events'
-import storageModule from '@/utils/storage'
+import storageModule from '@/utils/storages'
 import { getBooks } from '@/utils/api'
 import type { Settings } from '@/utils/types'
 
@@ -105,7 +105,7 @@ function save() {
   // storageModule.set('theme', theme.value);
   storageModule.set('host', host.value)
   storageModule.set('port', port.value)
-  storageModule.set('wordDetail', settings.value)
+  storageModule.set('wordDetail', cloneDeep(settings.value))
   ElMessage.success('保存成功')
 }
 onMounted(() => {
@@ -117,7 +117,7 @@ onMounted(() => {
   <div id="settingTabContent" class="tab-pane" role="tabpanel" aria-labelledby="settingTab">
     <div class="container">
       <div class="row">
-        <div class="col-sm-8 offset-sm-2">
+        <div class="col-sm-8">
           <form id="settingForm">
             <div class="form-group row">
               <label for="collectWordbookSelect" class="col-sm-3 col-form-label">单词本</label>
@@ -128,7 +128,7 @@ onMounted(() => {
                   placeholder=""
                   style="padding: 0; height: 38px;width: 240px;"
                 >
-                  <el-option :value="0" label=" " disabled />
+                  <el-option :value="0" label=" " disabled v-if="options.length === 0"/>
                   <el-option
                     v-for="item in options"
                     :key="item.value"

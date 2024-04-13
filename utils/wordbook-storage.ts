@@ -21,7 +21,7 @@ const load = function (bookId: number) {
 function loadWordbook(bookId: number) {
   const key = `local:${KEY_PREFIX}${bookId}`
 
-  return storage.getItems([key])
+  return storage.getItem(key)
 }
 
 const save = function (bookId: number, data: any) {
@@ -47,7 +47,7 @@ const add = function (bookId: number, word: any) {
         const topicIdSet = new Set(wordList.map(word => word.topic_id))
 
         if (!topicIdSet.has(word.topic_id)) {
-          wordbook.push(word)
+          wordList.push(word)
           save(bookId, wordbook)
         }
 
@@ -76,7 +76,12 @@ const contains = function (bookId: number, topicId: number) {
   return new Promise((resolve) => {
     load(bookId)
       .then((wordbook) => {
-        const data = wordbook.map((it) => {
+        if (!wordbook) {
+          resolve(false)
+          return
+        }
+        const wordList = wordbook as unknown as Word[]
+        const data = wordList.map((it) => {
           const word = it as unknown as Word
           return word.topic_id
         })
@@ -88,15 +93,13 @@ const contains = function (bookId: number, topicId: number) {
 }
 
 const clear = function () {
-  // chrome.storage.local.get(null, (items) => {
-  //     let allKeys = Object.keys(items);
-
-  //     for (let key of allKeys) {
-  //         if (key.startsWith(KEY_PREFIX)) {
-  //             chrome.storage.local.remove(key);
-  //         }
-  //     }
-  // });
+  browser.storage.local.get().then((res) => {
+    Object.keys(res).forEach((key) => {
+      console.log(key)
+      if (key.startsWith(KEY_PREFIX))
+        browser.storage.local.remove(key)
+    })
+  })
 }
 
 const WordbookStorage = { load, save, add, remove, contains, clear }
