@@ -276,7 +276,7 @@ onClickOutside(popoverRef, (event) => {
     @after-leave="onAfterLeave"
   >
     <!-- icon 区域 -->
-    <div v-if="showIcon" ref="iconRef" name="__baicizhanHelperIconTips__" @click="onClick">
+    <div v-if="showIcon" ref="iconRef" name="" @click="onClick">
       <div style="width: 25px; height: 25px;">
         <img :src="iconSrc" style="max-width: 25px; border-radius: 5px; opacity: 0.8; cursor: pointer;">
       </div>

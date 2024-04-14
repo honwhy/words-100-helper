@@ -229,9 +229,9 @@ function onChange() {
   <div id="wordbookTabContent" class="tab-pane fade show active" role="tabpanel" aria-labelledby="wordbookTab">
     <div class="container">
       <div class="row">
-        <div class="col-sm-8">
+        <div class="col-sm-12">
           <div class="row" style="margin: 20px 0;">
-            <div class="col-sm-5" style="padding: 0">
+            <div class="col-sm-4" style="padding: 0">
               <el-select
                 id="wordbookSelect"
                 v-model="selectedBookId"
@@ -257,7 +257,7 @@ function onChange() {
             >
               <img style="width: 20px;" :src="refresh">
             </button>
-            <div class="col-sm-4 offset-sm-2">
+            <div class="col-sm-4" style="margin-left: 20px">
               <el-checkbox id="maskEnglishButton" v-model="englishMasked" label="隐藏英文" size="large" />
               <el-checkbox id="maskMeanButton" v-model="meansMasked" label="隐藏释义" size="large" />
             </div>
@@ -282,6 +282,7 @@ function onChange() {
               <el-button
                 id="firstLettersAscOrderBtn" class="btn"
                 :class="{ 'btn-outline-primary': order === 'firstLettersAscOrder', 'btn-outline-secondary': order !== 'firstLettersAscOrder' }"
+                style="width: 100px"
                 @click="order = 'firstLettersAscOrder'"
               >
                 首字母顺序
@@ -289,6 +290,7 @@ function onChange() {
               <el-button
                 id="firstLettersDescOrderBtn" class="btn"
                 :class="{ 'btn-outline-primary': order === 'firstLettersDescOrder', 'btn-outline-secondary': order !== 'firstLettersDescOrder' }"
+                style="width: 100px"
                 @click="order = 'firstLettersDescOrder'"
               >
                 首字母倒序

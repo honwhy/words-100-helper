@@ -50,7 +50,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <div id="__baicizhanHelperSupportDiv__">
+  <div id="__baicizhanHelper__lgelpdnoogahffdkigeeonhggglogabb">
     <SelectionPopper v-if="triggerMode !== 'never'" :trigger-mode="triggerMode" :show-style="showStyle" />
   </div>
 </template>

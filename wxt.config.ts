@@ -41,4 +41,7 @@ export default defineConfig({
       },
     },
   }),
+  zip: {
+    excludeSources: ['env.txt'],
+  },
 })
