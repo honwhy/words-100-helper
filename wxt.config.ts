@@ -7,6 +7,7 @@ import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
 // See https://wxt.dev/api/config.html
 export default defineConfig({
   manifest: ({ browser }) => ({
+    name: '新百词斩助手',
     permissions: browser === 'firefox' ? ['storage', 'http://110.42.229.221/*'] : ['storage'],
     host_permissions: [
       'http://110.42.229.221/*',
