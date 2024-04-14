@@ -29,6 +29,10 @@ async function setup() {
     nickname.value = name
   })
 }
+function logout() {
+  EventBus.emit(Events.UNAUTHED)
+}
+
 onMounted(() => {
   setup()
 })
@@ -69,7 +73,7 @@ onMounted(() => {
       <template #dropdown>
         <el-dropdown-menu>
           <el-dropdown-item style="min-width: 100px;">
-            <span>退出</span>
+            <span @click="logout">退出</span>
           </el-dropdown-item>
         </el-dropdown-menu>
       </template>
