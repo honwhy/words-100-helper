@@ -5,9 +5,9 @@ defineOptions({ name: 'Usage' })
 const login1 = ref(browser.runtime.getURL('/images/login1.png'))
 const login2 = ref(browser.runtime.getURL('/images/login2.png'))
 const selectWorkbook = ref(browser.runtime.getURL('/images/select-workbook.png'))
-const collectWord = ref(browser.runtime.getURL('/images/collect-word.gif'))
-const searchWord = ref(browser.runtime.getURL('/images/search-word.gif'))
-const manageWordbook = ref(browser.runtime.getURL('/images/manage-wordbook.gif'))
+const collectWord = ref(browser.runtime.getURL('/images/collect-word-min.gif'))
+const searchWord = ref(browser.runtime.getURL('/images/search-word-min.gif'))
+const manageWordbook = ref(browser.runtime.getURL('/images/manage-wordbook-min.gif'))
 </script>
 
 <template>
