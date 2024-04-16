@@ -30,9 +30,13 @@
 
 ## 安装
 
-[![https://chrome.google.com/webstore/detail/%E7%99%BE%E8%AF%8D%E6%96%A9%E5%8A%A9%E6%89%8B/ofdejofffdjcmlbclhhfeaefodgffbnm](./images/tryitnow.png)](https://chrome.google.com/webstore/detail/%E7%99%BE%E8%AF%8D%E6%96%A9%E5%8A%A9%E6%89%8B/ofdejofffdjcmlbclhhfeaefodgffbnm)
+[Chrome](https://chrome.google.com/webstore/detail/words-100-helper/)
 
-或者下载最新[发行版本](https://github.com/marmot-z/baicizhan-helper/releases/latest)使用开发者模式安装
+[Edge](https://microsoftedge.microsoft.com/addons/detail/igoongmgkfmdmlnabfphphifbmckjjea)
+
+[Firefox](https://addons.mozilla.org/en-US/firefox/addon/words-100-helper/)
+
+或者下载最新[发行版本](https://github.com/honwhy/words-100-helper/releases/latest)使用开发者模式安装
 
 ## 声明
 

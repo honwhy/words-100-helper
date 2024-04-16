@@ -30,7 +30,11 @@ For relevant introductions and usage, please refer to the following two videos:
 
 ## Installation
 
-[![https://chrome.google.com/webstore/detail/%E7%99%BE%E8%AF%8D%E6%96%A9%E5%8A%A9%E6%89%8B/ofdejofffdjcmlbclhhfeaefodgffbnm](./images/tryitnow.png)](https://chrome.google.com/webstore/detail/%E7%99%BE%E8%AF%8D%E6%96%A9%E5%8A%A9%E6%89%8B/ofdejofffdjcmlbclhhfeaefodgffbnm)
+[Chrome](https://chrome.google.com/webstore/detail/words-100-helper/)
+
+[Edge](https://microsoftedge.microsoft.com/addons/detail/igoongmgkfmdmlnabfphphifbmckjjea)
+
+[Firefox](https://addons.mozilla.org/en-US/firefox/addon/words-100-helper/)
 
 Alternatively, you can download the latest [release version](https://github.com/honwhy/words-100-helper/releases/latest) and install it in developer mode.
 

@@ -17,7 +17,7 @@
 
 ## 安装
 
-[![https://chrome.google.com/webstore/detail/%E7%99%BE%E8%AF%8D%E6%96%A9%E5%8A%A9%E6%89%8B/ofdejofffdjcmlbclhhfeaefodgffbnm](./images/tryitnow.png)](https://chrome.google.com/webstore/detail/%E7%99%BE%E8%AF%8D%E6%96%A9%E5%8A%A9%E6%89%8B/ofdejofffdjcmlbclhhfeaefodgffbnm)
+[![https://chrome.google.com/webstore/detail/%E7%99%BE%E8%AF%8D%E6%96%A9%E5%8A%A9%E6%89%8B/ofdejofffdjcmlbclhhfeaefodgffbnm](./public/images/tryitnow.png)](https://chrome.google.com/webstore/detail/%E7%99%BE%E8%AF%8D%E6%96%A9%E5%8A%A9%E6%89%8B/ofdejofffdjcmlbclhhfeaefodgffbnm)
 
 或者下载最新[发行版本](https://github.com/marmot-z/baicizhan-helper/releases/latest)使用开发者模式安装
 
@@ -32,7 +32,8 @@
 ## 赞助商
 
 本项目由 [jetBrains](https://www.jetbrains.com/community/opensource/#support) 赞助。
-<img src="./images/jb_beam.png" alt="sponsor" width="200"/>
+
+<img src="./public/images/jb_beam.png" alt="sponsor" width="200"/>
 
 ## LICENSE
 
