@@ -30,7 +30,7 @@
 
 ## 安装
 
-[Chrome](https://chrome.google.com/webstore/detail/words-100-helper/)
+[Chrome](https://chromewebstore.google.com/detail/jehicjpkeefodocfpinehggbcpbcfemn)
 
 [Edge](https://microsoftedge.microsoft.com/addons/detail/igoongmgkfmdmlnabfphphifbmckjjea)
 
