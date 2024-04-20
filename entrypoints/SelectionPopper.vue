@@ -291,7 +291,7 @@ onClickOutside(popoverRef, (event) => {
     </div>
     <template #reference>
       <!-- 触发弹出层的元素 -->
-      <span ref="selectedTextRef">{{ selectedText }}</span>
+      <span ref="selectedTextRef" style="display: none;">{{ selectedText }}</span>
     </template>
   </el-popover>
 </template>
