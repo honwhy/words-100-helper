@@ -30,8 +30,9 @@ const bingTranslateEnable = ref(true)
 // 如果是单词单字就采用百词斩翻译否则使用bing翻译
 // bing翻译并没有用上
 function handleSelection() {
+  console.log('handleSelection')
   if (isPopoverVisible.value) {
-    console.log('still in the last on popper')
+    console.log('handleSelection=>still in the last on popper')
     return
   }
   if (isChineseWord(selectedText.value) || isEnglishWord(selectedText.value)) {
@@ -59,9 +60,10 @@ function handleSelection() {
 }
 // 监听鼠标抬起事件以检测是否进行了文本选择
 function handleMouseUp(event: MouseEvent) {
-  console.log(event)
+  event.stopPropagation()
+  console.log('handleMouseUp', event)
   if (isPopoverVisible.value) {
-    console.log('still in the last on popper')
+    console.log('handleMouseUp=>still in the last on popper')
     return
   }
   const selection = window.getSelection()
@@ -72,11 +74,11 @@ function handleMouseUp(event: MouseEvent) {
       console.log('selection is Empty')
       return
     }
+    const range = selection!.getRangeAt(0)
+    const rect = range.getBoundingClientRect()
     selectedText.value = value
     selectedTextRef.value!.getBoundingClientRect = () => {
-      const selection = window.getSelection()
-      const range = selection!.getRangeAt(0)
-      const rect = range.getBoundingClientRect()
+      // const selection = window.getSelection()
       // 考虑滚动偏移
       // rect.x += window.scrollX
       // rect.y += window.scrollY
@@ -86,7 +88,8 @@ function handleMouseUp(event: MouseEvent) {
   }
   else {
     // 无有效选择时，关闭弹窗
-    isPopoverVisible.value = false
+    // isPopoverVisible.value = false
+    cleanup()
   }
 }
 
@@ -99,9 +102,8 @@ function onBeforeEnter() {
 }
 
 // 弹出层消失后重置相关状态
-function onAfterLeave() {
-  // selectedText.value = ''
-  console.log('onAfterLeave')
+function onBeforeLeave() {
+  resetInner()
 }
 
 // 在组件挂载时添加必要的监听器
@@ -206,13 +208,11 @@ function isPointerInRect(event: PointerEvent, rect: DOMRect | undefined): boolea
     && pointerY <= rect.bottom
   )
 }
-function cleanup() {
-  console.log('clean outside and cleanup')
-  isPopoverVisible.value = false
+function resetInner() {
   showIcon.value = false
   showWordPopper.value = false
   showPhrasePopper.value = false
-  selectedText.value = ''
+  // selectedText.value = ''
   // selectedTextRef.value!.getBoundingClientRect = () => {
   //   const rect = document.body.getBoundingClientRect()
   //   const cloned = cloneDeep(rect)
@@ -228,6 +228,10 @@ function cleanup() {
   //   })
   //   return cloned
   // }
+}
+function cleanup() {
+  console.log('clean outside and cleanup')
+  isPopoverVisible.value = false
 }
 const iconRef = ref<HTMLDivElement>()
 const wordPopperRef = ref<HTMLDivElement>()
@@ -270,10 +274,12 @@ onClickOutside(popoverRef, (event) => {
     append-to-body
     :popper-class="{ customPopperClass: showIcon }"
     :show-arrow="showArrow"
-    :hide-after="1000000"
+    :hide-after="0"
+    transition="none"
     :width="holdingWidth"
+    style="overflow: hidden;"
     @before-enter="onBeforeEnter"
-    @after-leave="onAfterLeave"
+    @before-leave="onBeforeLeave"
   >
     <!-- icon 区域 -->
     <div v-if="showIcon" ref="iconRef" name="" @click="onClick">
