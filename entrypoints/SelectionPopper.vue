@@ -144,9 +144,9 @@ const appendElement = computed(() => {
 function popupWordWebuiPopover(word: string) {
   console.log('popupWordWebuiPopover', word)
   // 词干提取，如：words -> word
-  const stemWord = stemmer(word)
+  // const stemWord = stemmer(word)
 
-  sendRequest({ action: 'getWordInfo', args: stemWord }).then((response) => {
+  sendRequest({ action: 'getWordInfo', args: word }).then((response) => {
     if (!response)
       return
     const data = response as Response
