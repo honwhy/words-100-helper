@@ -26,6 +26,8 @@ const dialogVisible = ref(false)
 function setup() {
   EventBus.on(Events.UNAUTHED, () => {
     console.log('LoginModal got UNAUTHED')
+    storageModule.remove(['accessToken'])
+    EventBus.emit('nickname', '游客用户')
     dialogVisible.value = true
   })
   EventBus.on(Events.AUTHED, () => {
