@@ -1,0 +1,82 @@
+@import url('./webui-popper.scss');
+/* 自定义弹出层样式 */
+.customPopperClass {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  min-width: 25px !important;
+}
+
+.translate-content {
+  min-width: 240px;
+}
+
+.title {
+  margin-bottom: 0px;
+}
+
+.word {
+  color: black;
+  font-size: 18px;
+  line-height: 18px;
+  font-weight: 700;
+}
+
+.accent {
+  font-size: small;
+  color: #606266;
+  margin-top: 2px;
+  white-space: nowrap;
+  font-size: 14px;
+}
+
+.star {
+  float: right;
+  cursor: pointer;
+  font-size: large;
+}
+
+.sound-size {
+  cursor: pointer;
+}
+
+.means-table {
+  table-layout: auto;
+  border-collapse: separate;
+  border-spacing: 0 2px;
+}
+
+.data-cell-first {
+  text-align: left;
+  min-width: 40px;
+  padding-right: 5px;
+  color: #636363;
+  font-style: italic;
+  font-weight: 400;
+  font-size: 14px;
+}
+
+.data-cell {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  word-wrap: break-word;
+  font-size: 14px;
+  font-weight: 400;
+  color: black;
+}
+
+.sentence {
+  padding-top: 2px;
+}
+
+.sentence-img {
+  width: 180px;
+}
+
+.sentence-p {
+  margin: 3px 0;
+  font-size: 14px;
+  font-weight: 400;
+  color: black;
+}

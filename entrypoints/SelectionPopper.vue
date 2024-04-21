@@ -4,9 +4,11 @@ import type { ElPopper } from 'element-plus'
 import { ElMessage } from 'element-plus'
 import { cloneDeep, isEmpty } from 'lodash-es'
 import { stemmer } from 'stemmer'
-import { nextTick, onMounted, onUnmounted, ref } from 'vue'
+import { computed, nextTick, onMounted, onUnmounted, ref } from 'vue'
 import WordPopper from './WordPopper.vue'
 import PhrasePopover from './PhrasePopover.vue'
+import 'element-plus/es/components/message/style/css' // 引入 ElMessage 的样式
+import 'element-plus/es/components/message-box/style/css' // 引入 ElMessageBox 的样式
 
 defineOptions({ name: 'SelectionPopper' })
 const props = defineProps<Props>()
@@ -136,6 +138,9 @@ function sendRequest(option: { action: string, args: string }) {
     })
   })
 }
+const appendElement = computed(() => {
+  return document.querySelector('words-100-helper')!.shadowRoot!.querySelector('body')
+})
 function popupWordWebuiPopover(word: string) {
   console.log('popupWordWebuiPopover', word)
   // 词干提取，如：words -> word
@@ -159,7 +164,11 @@ function popupWordWebuiPopover(word: string) {
       console.error(e)
       // $supportElement.$el.css('display', 'none')
       // $supportElement.$el.trigger('baicizhanHelper:alert', ['查询失败，稍后再试'])
-      ElMessage.warning('查询失败，稍后再试')
+      ElMessage({
+        message: '查询失败，稍后再试',
+        type: 'warning',
+        appendTo: appendElement.value!,
+      })
     })
 }
 interface TranslateResponse {
@@ -186,7 +195,11 @@ function popupPhraseWebuiPopover(phrase: string) {
       console.error(e)
       // $supportElement.$el.css('display', 'none')
       // $supportElement.$el.trigger('baicizhanHelper:alert', ['查询失败，稍后再试'])
-      ElMessage.warning('查询失败，稍后再试')
+      ElMessage({
+        message: '查询失败，稍后再试',
+        type: 'warning',
+        appendTo: appendElement.value!,
+      })
     })
 }
 function onClick() {
@@ -271,12 +284,12 @@ onClickOutside(popoverRef, (event) => {
     ref="popoverRef"
     :visible="isPopoverVisible"
     placement="bottom-start"
-    append-to-body
     :popper-class="{ customPopperClass: showIcon }"
     :show-arrow="showArrow"
     :hide-after="0"
     transition="none"
     :width="holdingWidth"
+    :teleported="false"
     style="overflow: hidden;"
     @before-enter="onBeforeEnter"
     @before-leave="onBeforeLeave"
@@ -301,14 +314,3 @@ onClickOutside(popoverRef, (event) => {
     </template>
   </el-popover>
 </template>
-
-<style lang="scss">
-/* 自定义弹出层样式 */
-.customPopperClass {
-  background: transparent !important;
-  border: none !important;
-  box-shadow: none !important;
-  padding: 0 !important;
-  min-width: 25px !important;
-}
-</style>

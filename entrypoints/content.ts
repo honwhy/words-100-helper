@@ -1,11 +1,14 @@
 import { createApp } from 'vue'
 import App from './Contents.vue'
+import './style.css'
 
 export default defineContentScript({
   matches: ['<all_urls>'],
+  cssInjectionMode: 'ui',
 
-  main(ctx) {
-    const ui = createIntegratedUi(ctx, {
+  async main(ctx) {
+    const ui = await createShadowRootUi(ctx, {
+      name: 'words-100-helper',
       position: 'inline',
       anchor: 'body',
       append: 'last',

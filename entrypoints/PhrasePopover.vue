@@ -17,14 +17,3 @@ interface Props {
     </div>
   </div>
 </template>
-
-<style scoped lang="scss">
-@import url('./webui-popper.scss');
-.translate-content {
-  min-width: 240px;
-}
-
-.title {
-  margin-bottom: 0px;
-}
-</style>

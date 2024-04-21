@@ -1,8 +1,6 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
-import 'element-plus/es/components/message/style/css' // 引入 ElMessage 的样式
-import 'element-plus/es/components/message-box/style/css' // 引入 ElMessageBox 的样式
 import { cloneDeep, isNil } from 'lodash-es'
 import levenshtein from 'js-levenshtein-esm'
 import { stemmer } from 'stemmer'
@@ -43,6 +41,9 @@ const sentence = computed(() => {
 
   return element
 })
+const appendElement = computed(() => {
+  return document.querySelector('words-100-helper')!.shadowRoot!.querySelector('body')
+})
 function favoriteWord() {
   console.log('on favorite word', props.data)
   const fn = props.data.word_basic_info?.__collected__ ? 'cancelCollectWord' : 'collectWord'
@@ -53,7 +54,12 @@ function favoriteWord() {
     .then((result) => {
       console.log('result', result, tips, baseData.value)
       baseData.value.word_basic_info.__collected__ = !baseData.value.word_basic_info.__collected__
-      ElMessage.success(`${tips}成功`)
+      ElMessage({
+        message: `${tips}成功`,
+        type: 'success',
+        center: true,
+        appendTo: appendElement.value!,
+      })
     })
     .catch((e) => {
       console.error(`${tips}异常`, e)
@@ -65,12 +71,17 @@ function favoriteWord() {
           cancelButtonText: '关闭',
           type: 'warning',
           center: true,
+          appendTo: appendElement.value!,
         },
       )
         .then(() => {
-          browser.runtime.openOptionsPage()
+          // browser.runtime.openOptionsPage()
+          const url = browser.runtime.getURL('/options.html')
+          window.open(url)
         })
-        .catch(() => {})
+        .catch((e) => {
+          console.log(e)
+        })
     })
 
   // fn(props.data).then((response: unknown) => {
@@ -182,79 +193,3 @@ const sentenceAudio = ref<HTMLAudioElement>()
     </div>
   </div>
 </template>
-
-<style scoped lang="scss">
-@import url('./webui-popper.scss');
-.translate-content {
-  min-width: 240px;
-}
-
-.title {
-  margin-bottom: 0px;
-}
-
-.word {
-  color: black;
-  font-size: 18px;
-  line-height: 18px;
-  font-weight: 700;
-}
-
-.accent {
-  font-size: small;
-  color: #606266;
-  margin-top: 2px;
-  white-space: nowrap;
-  font-size: 14px;
-}
-
-.star {
-  float: right;
-  cursor: pointer;
-  font-size: large;
-}
-
-.sound-size {
-  cursor: pointer;
-}
-
-.means-table {
-  table-layout: auto;
-  border-collapse: separate;
-  border-spacing: 0 2px;
-}
-
-.data-cell-first {
-  text-align: left;
-  min-width: 40px;
-  padding-right: 5px;
-  color: #636363;
-  font-style: italic;
-  font-weight: 400;
-  font-size: 14px;
-}
-
-.data-cell {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  word-wrap: break-word;
-  font-size: 14px;
-  font-weight: 400;
-  color: black;
-}
-
-.sentence {
-  padding-top: 2px;
-}
-
-.sentence-img {
-  width: 180px;
-}
-
-.sentence-p {
-  margin: 3px 0;
-  font-size: 14px;
-  font-weight: 400;
-  color: black;
-}
-</style>

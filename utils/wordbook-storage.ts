@@ -1,4 +1,5 @@
 import { storage } from 'wxt/storage'
+import { isEmpty } from 'lodash-es'
 import { WordDetail } from './models'
 /**
  * 静态方法实现，则每次读取全部的 storage 内容（并回写）
@@ -44,6 +45,10 @@ const add = function (bookId: number, word: any) {
     load(bookId)
       .then((wordbook) => {
         const wordList = wordbook as unknown as Word[]
+        if (isEmpty(wordList)) {
+          resolve(false)
+          return
+        }
         const topicIdSet = new Set(wordList.map(word => word.topic_id))
 
         if (!topicIdSet.has(word.topic_id)) {
