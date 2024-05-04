@@ -3,7 +3,7 @@
   "type": "module",
   "version": "0.0.2",
   "private": true,
-  "description": "新百词斩助手",
+  "description": "新百词斩助手，支持取词翻译、收藏单词等操作（可同步至百词斩APP中）",
   "scripts": {
     "dev": "wxt",
     "dev:firefox": "wxt -b firefox",
