@@ -62,7 +62,7 @@ function handleSelection() {
 }
 // 监听鼠标抬起事件以检测是否进行了文本选择
 function handleMouseUp(event: MouseEvent) {
-  event.stopPropagation()
+  // event.stopPropagation()
   console.log('handleMouseUp', event)
   if (isPopoverVisible.value) {
     console.log('handleMouseUp=>still in the last on popper')

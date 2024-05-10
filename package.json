@@ -1,7 +1,7 @@
 {
   "name": "words-100-helper",
   "type": "module",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "private": true,
   "description": "新百词斩助手，支持取词翻译、收藏单词等操作（可同步至百词斩APP中）",
   "scripts": {
@@ -38,6 +38,6 @@
     "unplugin-auto-import": "^0.17.5",
     "unplugin-vue-components": "^0.26.0",
     "vue-tsc": "^2.0.6",
-    "wxt": "^0.17.12"
+    "wxt": "^0.18.2"
   }
 }
