@@ -34,6 +34,10 @@ export default defineConfig({
         resolvers: [ElementPlusResolver()],
       }),
     ],
+    build: {
+      // Enabling sourcemaps with Vue during development is known to cause problems with Vue
+      sourcemap: false,
+    },
     css: {
       preprocessorOptions: {
         scss: {

@@ -22,4 +22,5 @@ export interface Settings {
   antonymsDisplay: boolean
   similarWordsDisplay: boolean
   englishParaphraseDisplay: boolean
+  blacklist: string
 }

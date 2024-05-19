@@ -1,12 +1,15 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
+import { URLPattern } from 'urlpattern-polyfill'
 import SelectionPopper from './SelectionPopper.vue'
+import type { Settings } from '@/utils/types'
 
 defineOptions({ name: 'Contents' })
 const TRIGGER_MODE = { SHOW_ICON: 'showIcon', DIRECT: 'direct', NEVER: 'never' }
 const defaultTriggerMode = TRIGGER_MODE.SHOW_ICON
 const triggerMode = ref(defaultTriggerMode)
 const showStyle = ref('')
+const settings = ref<Settings>(defaultWordDetailSettings)
 // const bingTranslateEnable = ref(false)
 function sendRequest(option: { action: string, args: string[] }) {
   return new Promise((resolve, reject) => {
@@ -26,7 +29,7 @@ interface Compo {
 async function loadSetting() {
   return sendRequest({
     action: 'getStorageInfo',
-    args: ['triggerMode', 'popoverStyle', 'theme', 'bingTranslateEnable'],
+    args: ['triggerMode', 'popoverStyle', 'theme', 'bingTranslateEnable', 'wordDetail'],
   })
     .then((res) => {
       console.log('loadSetting', res)
@@ -42,8 +45,34 @@ async function loadSetting() {
 
       //   theme = isSystemDarkTheme ? THEME.DARK : THEME.LIGHT
       // }
+      settings.value = data[4] != null && data[4].value != null ? (data[4].value as Settings) : defaultWordDetailSettings
     })
 }
+function tryMatch() {
+  const url = window.location.href
+  console.log('url', url)
+  const item = settings.value.blacklist.split('\n').map(it => it.trim()).find((it2) => {
+    if (/^http(s)?:/.test(it2)) {
+      console.log('http(s)')
+      return new URLPattern(it2).test(url)
+    }
+    const a = (it2 as string).split('/')
+    console.log('hostname,pathname', a)
+    if (a.length >= 2) {
+      const hostname = a[0]
+      const pathname = (it2 as string).replace(hostname, '')
+      return new URLPattern({ hostname, pathname }).test(url)
+    }
+    else {
+      const pattern = new URLPattern({ hostname: it2 })
+      return pattern.test(url)
+    }
+  })
+  return item != null
+}
+const hideTranslate = computed(() => {
+  return tryMatch()
+})
 onMounted(() => {
   loadSetting()
 })
@@ -51,6 +80,6 @@ onMounted(() => {
 
 <template>
   <div id="__baicizhanHelper__lgelpdnoogahffdkigeeonhggglogabb">
-    <SelectionPopper v-if="triggerMode !== 'never'" :trigger-mode="triggerMode" :show-style="showStyle" />
+    <SelectionPopper v-if="triggerMode !== 'never' && !hideTranslate" :trigger-mode="triggerMode" :show-style="showStyle" />
   </div>
 </template>

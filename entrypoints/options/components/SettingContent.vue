@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue'
+import { getCurrentInstance, onMounted, ref } from 'vue'
 import { cloneDeep, isEmpty } from 'lodash-es'
 import { ElMessage } from 'element-plus'
 import type { UserBooks } from './hooks'
@@ -32,6 +32,8 @@ const triggerMode = ref('showIcon')
 const host = ref('')
 const port = ref(8080)
 
+const ins = getCurrentInstance()
+const insProxy = ins?.proxy
 const settings = ref<Settings>(defaultWordDetailSettings)
 function loadSettings() {
   storageModule.get('popoverStyle')
@@ -74,12 +76,15 @@ function loadSettings() {
         ? Object.assign(defaultWordDetailSettings, wordDetailSettings)
         : defaultWordDetailSettings
       settings.value = settings1 as Settings
+      // 强制更新
+      insProxy?.$forceUpdate()
     })
 }
 function setup() {
   EventBus.on(Events.UNAUTHED, () => {
     console.log('SettingContent got UNAUTHED')
     clearStorageBookId()
+    loadSettings()
   })
   EventBus.on(Events.AUTHED, () => {
     console.log('SettingContent got AUTHED')
@@ -128,7 +133,7 @@ onMounted(() => {
                   placeholder=""
                   style="padding: 0; height: 38px;width: 240px;"
                 >
-                  <el-option :value="0" label=" " disabled v-if="options.length === 0"/>
+                  <el-option v-if="options.length === 0" :value="0" label=" " disabled />
                   <el-option
                     v-for="item in options"
                     :key="item.value"
@@ -176,6 +181,18 @@ onMounted(() => {
                 <div class="custom-control custom-switch">
                   <input id="bingTransalteCheck" type="checkbox" class="custom-control-input" name="bingTranslateEnable">
                   <label class="custom-control-label" for="bingTransalteCheck">默认不开启</label>
+                </div>
+              </div>
+            </div>
+            <div class="form-group row">
+              <label class="col-sm-3 col-form-label">不翻译的网址</label>
+              <div class="col-sm-9">
+                <div class="custom-control custom-switch">
+                  <small class="form-text text-muted">当网站为下列域名时，将不会进行翻译</small>
+                  <el-input v-model="settings.blacklist" type="textarea" rows="5" class="custom-control-input" name="bingTranslateEnable" />
+                  <blockquote>
+                    <small class="form-text text-muted">可以为域名，同时支持通配符，如：*.google.com, google.com/mail/*, https://www.google.com/*，<br>每行配置一个</small>
+                  </blockquote>
                 </div>
               </div>
             </div>
@@ -282,5 +299,13 @@ onMounted(() => {
 }
 .checkbox-row {
   height: 28px;
+}
+blockquote {
+  display: block;
+  margin-left: 10px;
+  margin-top: 10px;
+  padding-left: 10px;
+  border-left: 0.25rem solid #e5e7eb;
+  border-inline-end: none;
 }
 </style>
