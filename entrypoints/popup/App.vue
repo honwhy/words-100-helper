@@ -1,10 +1,10 @@
 <script lang="ts" setup>
 import { provide, ref } from 'vue'
 import { Search } from '@element-plus/icons-vue'
-import { debounce } from 'lodash-es'
+import { debounce, intersection } from 'lodash-es'
 import WordDetailComp from '../components/WordDetail.vue'
 import type { Word, WordDetail } from '@/utils/models'
-import { getWordDetail, searchWord } from '@/utils/api'
+import { getWordDetail, getWordVideo, searchWord } from '@/utils/api'
 
 const keyword = ref('')
 const search = debounce(doSearch, 500)
@@ -33,6 +33,14 @@ function doSearch() {
       showDataList.value = true
     })
 }
+function findVideo(data: WordDetail) {
+  const interested = intersection(data.dict.exams, ['TOEFL', 'SAT', 'GMAT', 'GRE'])
+  if (interested.length > 0) {
+    getWordVideo(data.dict.word_basic_info.topic_id, 621).then((res) => {
+      console.log('getWordVideo', res)
+    })
+  }
+}
 function refreshWordDetail(topicId: number) {
   console.log('refreshWordDetail.topicId=>', topicId)
   showDataDetail.value = false
@@ -43,6 +51,7 @@ function refreshWordDetail(topicId: number) {
       showDataList.value = false
       showDataDetail.value = true
       // generateWordDetail(data, $('#detailDiv'), data.dict.word_basic_info.__collected__)
+      findVideo(data)
     })
     .catch((e) => {
       console.error('getWordDetail', e)

@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { computed, nextTick, ref } from 'vue'
-import refresh from '/svgs/refresh.svg'
 import volumeup from '/svgs/volume-up.svg'
 import levenshtein from 'js-levenshtein-esm'
 import { stemmer } from 'stemmer'
+import { ArrowLeft, ArrowRight } from '@element-plus/icons-vue'
 import type { Sentence } from '@/utils/models'
 
 defineOptions({ name: 'Sentences' })
@@ -69,13 +69,22 @@ function refreshSentence() {
 const sourceUrl = computed(() => {
   return resourceDomain + sentence.value.audio_uri
 })
+function prev() {
+  index.value = index.value - 1
+}
+function next() {
+  index.value = index.value + 1
+}
 </script>
 
 <template>
   <div v-if="data.length > 0" class="section">
     <p class="section-title">
       图文例句
-      <img class="refresh-icon" :src="refresh" title="刷新例句" @click="refreshSentence">
+      <span v-if="data.length > 0" class="refresh-icon">
+        <el-button class="refresh-button" text :disabled="index <= 0" :icon="ArrowLeft" @click="prev" />
+        <el-button class="refresh-button" text :disabled="index === data.length - 1" :icon="ArrowRight" @click="next" />
+      </span>
     </p>
     <div id="sentenceDiv">
       <span v-html="sentenceHtml" />
@@ -96,7 +105,10 @@ const sourceUrl = computed(() => {
 .refresh-icon {
   float: right;
   cursor: pointer;
-  width: 20px;
-  margin-right: 15px;
+  display: block;
+}
+.refresh-button {
+  padding: 4px 7px;
+  margin-left: 0 !important;
 }
 </style>

@@ -136,6 +136,7 @@ export interface Dict {
   synonyms: Synonym[]
   antonyms: Antonym[]
   en_means: EnglishMean[]
+  exams: string[]
 }
 export interface SimilarWord {
   setTopic_id: boolean

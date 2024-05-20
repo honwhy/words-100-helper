@@ -249,3 +249,26 @@ export function translate(phrase: string) {
     })
   })
 }
+
+export function getWordVideo(topicId: number, bookId: number) {
+  console.log('getWordVideo->topicId,bookId', topicId, bookId)
+  return loadRequestOptions().then(async ([host, port, accessToken]) => {
+    console.log(host, port)
+    const url = `https://resource.baicizhan.com/api/resource/xMode`
+    const raw = {
+      bookId: 621, // 11
+      topicIds: [topicId],
+    }
+    const response = await fetch(url, {
+      method: 'POST',
+      body: JSON.stringify(raw),
+      headers: {
+        'Content-Type': 'application/json',
+        'access_token': accessToken,
+        'Referer': 'https://learn.baicizhan.com/',
+        'Origin': 'https://learn.baicizhan.com',
+      },
+    })
+    return response.json()
+  })
+}
