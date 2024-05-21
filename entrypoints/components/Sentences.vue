@@ -63,9 +63,9 @@ function highlight(sentence: Sentence, word: string) {
     return `<span style="color: #007bff;">${match}</span>`
   })
 }
-function refreshSentence() {
-  index.value = index.value + 1
-}
+// function refreshSentence() {
+//   index.value = index.value + 1
+// }
 const sourceUrl = computed(() => {
   return resourceDomain + sentence.value.audio_uri
 })
@@ -106,6 +106,8 @@ function next() {
   float: right;
   cursor: pointer;
   display: block;
+  width: unset;
+  margin-right: 0;
 }
 .refresh-button {
   padding: 4px 7px;
