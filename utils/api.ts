@@ -1,4 +1,4 @@
-import { isNil } from 'lodash-es'
+import { isEmpty, isNil } from 'lodash-es'
 import type { Dict, WordDetail } from './models'
 import storageModule from './storages'
 import WordbookStorage from './wordbook-storage'
@@ -250,14 +250,21 @@ export function translate(phrase: string) {
   })
 }
 
-export function getWordVideo(topicId: number, bookId: number) {
-  console.log('getWordVideo->topicId,bookId', topicId, bookId)
+interface Args {
+  topicId: number
+  bookId?: number
+}
+export function getWordVideo(params: Args) {
+  console.log('getWordVideo->topicId,bookId', params)
   return loadRequestOptions().then(async ([host, port, accessToken]) => {
     console.log(host, port)
-    const url = `https://resource.baicizhan.com/api/resource/xMode`
+    if (isEmpty(accessToken) || accessToken === 'null')
+      return null
+
+    const url = `https://words-100-api.honwhy-wang.workers.dev/api/resource/xMode`
     const raw = {
-      bookId: 621, // 11
-      topicIds: [topicId],
+      bookId: params.bookId ?? 621, // 11
+      topicIds: [params.topicId],
     }
     const response = await fetch(url, {
       method: 'POST',
@@ -265,8 +272,8 @@ export function getWordVideo(topicId: number, bookId: number) {
       headers: {
         'Content-Type': 'application/json',
         'access_token': accessToken,
-        'Referer': 'https://learn.baicizhan.com/',
-        'Origin': 'https://learn.baicizhan.com',
+        // 'Referer': 'https://learn.baicizhan.com/',
+        // 'Origin': 'https://learn.baicizhan.com',
       },
     })
     return response.json()

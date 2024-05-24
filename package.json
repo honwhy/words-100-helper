@@ -1,7 +1,7 @@
 {
   "name": "words-100-helper",
   "type": "module",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "private": true,
   "description": "新百词斩助手，支持取词翻译、收藏单词等操作（可同步至百词斩APP中）",
   "scripts": {

@@ -4,7 +4,8 @@ import { Search } from '@element-plus/icons-vue'
 import { debounce, intersection } from 'lodash-es'
 import WordDetailComp from '../components/WordDetail.vue'
 import type { Word, WordDetail } from '@/utils/models'
-import { getWordDetail, getWordVideo, searchWord } from '@/utils/api'
+import { getWordDetail, searchWord } from '@/utils/api'
+import type { ResponseData } from '@/utils/video-types'
 
 const keyword = ref('')
 const search = debounce(doSearch, 500)
@@ -13,6 +14,7 @@ const showDataList = ref(false)
 const showDataDetail = ref(false)
 const dataList = ref<Word[]>([])
 const dataDetail = ref<WordDetail>()
+const videoUrl = ref('')
 function doSearch() {
   const content = keyword.value.trim()
   if (!content)
@@ -36,14 +38,30 @@ function doSearch() {
 function findVideo(data: WordDetail) {
   const interested = intersection(data.dict.exams, ['TOEFL', 'SAT', 'GMAT', 'GRE'])
   if (interested.length > 0) {
-    getWordVideo(data.dict.word_basic_info.topic_id, 621).then((res) => {
+    // getWordVideo(data.dict.word_basic_info.topic_id, 621).then((res) => {
+    //   console.log('getWordVideo', res)
+    // })
+    browser.runtime.sendMessage(undefined, {
+      action: 'getWordVideo',
+      args: {
+        topicId: data.dict.word_basic_info.topic_id,
+      },
+    }).then((res) => {
       console.log('getWordVideo', res)
+      if (res) {
+        const data = res as ResponseData
+        if (data.code === 1) {
+          const video = data.data?.[0].xModeTopic.video
+          videoUrl.value = video ?? ''
+        }
+      }
     })
   }
 }
 function refreshWordDetail(topicId: number) {
   console.log('refreshWordDetail.topicId=>', topicId)
   showDataDetail.value = false
+  videoUrl.value = ''
   getWordDetail(topicId)
     .then((data) => {
       console.log('getWordDetail', data)
@@ -97,7 +115,7 @@ provide('refreshWordDetail', refreshWordDetail)
       </tbody>
     </table>
     <!-- 单词详情 -->
-    <WordDetailComp v-if="showDataDetail && dataDetail" :data="dataDetail" />
+    <WordDetailComp v-if="showDataDetail && dataDetail" :data="dataDetail" :video-url="videoUrl" />
   </div>
 </template>
 

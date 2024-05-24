@@ -6,11 +6,13 @@ import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
 
 // See https://wxt.dev/api/config.html
 export default defineConfig({
-  manifest: ({ browser }) => ({
+  manifest: () => ({
     name: '新百词斩助手',
-    permissions: browser === 'firefox' ? ['storage', 'http://110.42.229.221/*'] : ['storage'],
+    permissions: ['storage'],
     host_permissions: [
       'http://110.42.229.221/*',
+      'https://resource.baicizhan.com/*',
+      'https://words-100-api.honwhy-wang.workers.dev/*',
     ],
     web_accessible_resources: [
       {

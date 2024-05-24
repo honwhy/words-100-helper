@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, onMounted, ref, watch } from 'vue'
 import { ElMessage } from 'element-plus'
+import { intersection } from 'lodash-es'
 import WordDetailComp from '../../components/WordDetail.vue'
 import { useWordBook } from './hooks'
 import EventBus from '@/utils/eventBus'
@@ -203,6 +204,30 @@ function loadAndPlayAccent(data: MyWord) {
     createAudioAndPlay(audioBinaryData.slice(0, audioBinaryData.byteLength))
   }
 }
+const videoUrl = ref('')
+function findVideo(data: WordDetail) {
+  const interested = intersection(data.dict.exams, ['TOEFL', 'SAT', 'GMAT', 'GRE'])
+  if (interested.length > 0) {
+    // getWordVideo(data.dict.word_basic_info.topic_id, 621).then((res) => {
+    //   console.log('getWordVideo', res)
+    // })
+    browser.runtime.sendMessage(undefined, {
+      action: 'getWordVideo',
+      args: {
+        topicId: data.dict.word_basic_info.topic_id,
+      },
+    }).then((res) => {
+      console.log('getWordVideo', res)
+      if (res) {
+        const data = res as ResponseData
+        if (data.code === 1) {
+          const video = data.data?.[0].xModeTopic.video
+          videoUrl.value = video ?? ''
+        }
+      }
+    })
+  }
+}
 // 弹窗显示单词详情
 const showDataDetail = ref(false)
 const dataDetail = ref<WordDetail>()
@@ -214,6 +239,7 @@ function openDetail(topicId: number) {
       dataDetail.value = data as WordDetail
       showDataDetail.value = true
       // generateWordDetail(data, $('#detailDiv'), data.dict.word_basic_info.__collected__)
+      findVideo(data)
     })
     .catch((e) => {
       console.error(e)
@@ -337,7 +363,7 @@ function onChange() {
   </div>
   <!-- 单词详情 -->
   <el-dialog v-model="showDataDetail" class="container" width="450px">
-    <WordDetailComp v-if="showDataDetail && dataDetail" :data="dataDetail" />
+    <WordDetailComp v-if="showDataDetail && dataDetail" :data="dataDetail" :video-url="videoUrl" />
   </el-dialog>
 </template>
 

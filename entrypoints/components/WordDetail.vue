@@ -28,6 +28,7 @@ const props = withDefaults(defineProps<Props>(), {
 interface Props {
   data: WordDetail
   showIcon?: boolean
+  videoUrl?: string
 }
 const baseData = useVModel(props, 'data')
 const basicInfo = computed(() => {
@@ -112,6 +113,11 @@ onMounted(() => {
 
 <template>
   <div id="detailDiv">
+    <div v-show="videoUrl" class="section">
+      <video width="350" height="219" controls :src="videoUrl">
+        <source type="video/mp4">
+      </video>
+    </div>
     <div class="section">
       <span class="word">{{ basicInfo?.word }}</span>
       <span v-show="showIcon" id="starIcon" class="star" @click.stop="favoriteWord" @keydown="handleKeydown">
