@@ -136,27 +136,24 @@ provide('refreshWordDetail', refreshWordDetail)
 }
 /* 美化滚动条整体样式 */
 ::-webkit-scrollbar {
-  width: 12px; /* 滚动条宽度 */
-  height: 12px; /* 垂直滚动条高度 */
+  width: 10px; /* 滚动条宽度 */
 }
 
 /* 美化滚动条轨道（滑动轨道） */
 ::-webkit-scrollbar-track {
-  background-color: #f1f1f1; /* 轨道背景色 */
-  border-radius: 6px; /* 圆角 */
+  background: rgba(204, 204, 204, 0.1); /* 轨道颜色 */
 }
 
 /* 美化滚动条滑块（滚动 thumb） */
 ::-webkit-scrollbar-thumb {
-  background-color: #ccc; /* 滑块背景色 */
+  background: rgba(204, 204, 204, 0.5); /* 滑块颜色 */
   border-radius: 6px; /* 圆角 */
-  box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3); /* 阴影效果 */
 
   /* 滚动状态下的滑块样式 */
   &:hover,
   &-active {
-    width: 14px;
-    background-color: #888; /* 滚动时滑块背景色 */
+    width: 12px;
+    background: rgba(204, 204, 204, 0.7); /* 鼠标悬停时滑块颜色加深 */
   }
 }
 </style>
