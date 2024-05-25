@@ -261,7 +261,7 @@ export function getWordVideo(params: Args) {
     if (isEmpty(accessToken) || accessToken === 'null')
       return null
 
-    const url = `https://words-100-api.honwhy-wang.workers.dev/api/resource/xMode`
+    const url = `https://words-100-api.honwhy.wang/api/resource/xMode`
     const raw = {
       bookId: params.bookId ?? 621, // 11
       topicIds: [params.topicId],

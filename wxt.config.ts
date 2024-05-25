@@ -12,7 +12,7 @@ export default defineConfig({
     host_permissions: [
       'http://110.42.229.221/*',
       'https://resource.baicizhan.com/*',
-      'https://words-100-api.honwhy-wang.workers.dev/*',
+      'https://words-100-api.honwhy.wang/*',
     ],
     web_accessible_resources: [
       {
