@@ -43,14 +43,6 @@ interface ChnMean {
   id: number
   mean: string
   mean_type: string
-  setAccent_uk: boolean
-  setAccent_uk_audio_uri: boolean
-  setAccent_usa: boolean
-  setAccent_usa_audio_uri: boolean
-  setId: boolean
-  setMean: boolean
-  setMean_type: boolean
-  setTopic_id: boolean
   topic_id: number
 }
 export interface Sentence {
@@ -61,25 +53,13 @@ export interface Sentence {
   img_uri: string
   sentence: string
   sentence_trans: string
-  setAudio_uri: boolean
-  setChn_mean_id: boolean
-  setHighlight_phrase: boolean
-  setId: boolean
-  setImg_uri: boolean
-  setSentence: boolean
-  setSentence_trans: boolean
-  setTopic_id: boolean
   topic_id: number
+  // 拓展字段
+  video_uri?: string
 }
 export interface ShortPhrase {
   chn_mean_id: number
   id: number
-  setChn_mean_id: boolean
-  setId: boolean
-  setShort_phrase: boolean
-  setShort_phrase_topic_id: boolean
-  setShort_phrase_trans: boolean
-  setTopic_id: boolean
   short_phrase: string
   short_phrase_topic_id: number
   short_phrase_trans: string
@@ -87,11 +67,6 @@ export interface ShortPhrase {
 }
 export interface Synonym {
   chn_mean_id: number
-  setChn_mean_id: boolean
-  setSyn_ant: boolean
-  setSyn_ant_id: boolean
-  setSyn_ant_topic_id: boolean
-  setTopic_id: boolean
   syn_ant: string
   syn_ant_id: number
   syn_ant_topic_id: number
@@ -99,11 +74,6 @@ export interface Synonym {
 }
 export interface Antonym {
   chn_mean_id: number
-  setChn_mean_id: boolean
-  setSyn_ant: boolean
-  setSyn_ant_id: boolean
-  setSyn_ant_topic_id: boolean
-  setTopic_id: boolean
   syn_ant: string
   syn_ant_id: number
   syn_ant_topic_id: number
@@ -117,14 +87,6 @@ export interface EnglishMean {
   id: number
   mean: string
   mean_type: string
-  setAccent_uk: boolean
-  setAccent_uk_audio_uri: boolean
-  setAccent_usa: boolean
-  setAccent_usa_audio_uri: boolean
-  setId: boolean
-  setMean: boolean
-  setMean_type: boolean
-  setTopic_id: boolean
   topic_id: number
 }
 export interface Dict {
@@ -139,9 +101,6 @@ export interface Dict {
   exams: string[]
 }
 export interface SimilarWord {
-  setTopic_id: boolean
-  setWord: boolean
-  setWord_level_id: boolean
   topic_id: number
   word: string
   word_level_id: number

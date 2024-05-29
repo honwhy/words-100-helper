@@ -81,7 +81,7 @@ function next() {
   <div v-if="data.length > 0" class="section">
     <p class="section-title">
       图文例句
-      <span v-if="data.length > 0" class="refresh-icon">
+      <span v-if="data.length > 1" class="refresh-icon">
         <el-button class="refresh-button" text :disabled="index <= 0" :icon="ArrowLeft" @click="prev" />
         <el-button class="refresh-button" text :disabled="index === data.length - 1" :icon="ArrowRight" @click="next" />
       </span>
@@ -96,7 +96,12 @@ function next() {
       <p style="color: #6a6d71;">
         {{ sentence.sentence_trans }}
       </p>
-      <img style="max-width: 200px;" :src="resourceDomain + sentence.img_uri">
+      <div v-if="sentence.video_uri" class="section">
+        <video width="350" height="219" autoplay muted loop :src="sentence.video_uri">
+          <source type="video/mp4">
+        </video>
+      </div>
+      <img v-else style="max-width: 200px;" :src="resourceDomain + sentence.img_uri">
     </div>
   </div>
 </template>

@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { provide, ref } from 'vue'
 import { Search } from '@element-plus/icons-vue'
-import { debounce, intersection } from 'lodash-es'
+import { cloneDeep, debounce, intersection } from 'lodash-es'
 import WordDetailComp from '../components/WordDetail.vue'
 import type { Word, WordDetail } from '@/utils/models'
 import { getWordDetail, searchWord } from '@/utils/api'
@@ -14,7 +14,6 @@ const showDataList = ref(false)
 const showDataDetail = ref(false)
 const dataList = ref<Word[]>([])
 const dataDetail = ref<WordDetail>()
-const videoUrl = ref('')
 function doSearch() {
   const content = keyword.value.trim()
   if (!content)
@@ -35,8 +34,8 @@ function doSearch() {
       showDataList.value = true
     })
 }
-function findVideo(data: WordDetail) {
-  const interested = intersection(data.dict.exams, ['TOEFL', 'SAT', 'GMAT', 'GRE'])
+function findVideo(wordDetail: WordDetail) {
+  const interested = intersection(wordDetail.dict.exams, ['TOEFL', 'SAT', 'GMAT', 'GRE'])
   if (interested.length > 0) {
     // getWordVideo(data.dict.word_basic_info.topic_id, 621).then((res) => {
     //   console.log('getWordVideo', res)
@@ -44,7 +43,7 @@ function findVideo(data: WordDetail) {
     browser.runtime.sendMessage(undefined, {
       action: 'getWordVideo',
       args: {
-        topicId: data.dict.word_basic_info.topic_id,
+        topicId: wordDetail.dict.word_basic_info.topic_id,
       },
     }).then((res) => {
       console.log('getWordVideo', res)
@@ -52,7 +51,30 @@ function findVideo(data: WordDetail) {
         const data = res as ResponseData
         if (data.code === 1) {
           const video = data.data?.[0].xModeTopic.video
-          videoUrl.value = video ?? ''
+          if (wordDetail.dict.sentences?.length > 0) {
+            wordDetail.dict.sentences.unshift({
+              ...wordDetail.dict.sentences[0],
+              video_uri: video,
+            })
+          }
+          else {
+            wordDetail.dict.sentences.push({
+              audio_uri: '',
+              chn_mean_id: 0,
+              highlight_phrase: '',
+              id: 0,
+              img_uri: '',
+              sentence: '',
+              sentence_trans: '',
+              topic_id: wordDetail.dict.word_basic_info.topic_id,
+              video_uri: video,
+            })
+          }
+          // 判断当前的topicId是否没有比变化
+          if (dataDetail.value?.dict.word_basic_info.topic_id === wordDetail.dict.word_basic_info.topic_id) {
+            const newDetail = cloneDeep(wordDetail)
+            dataDetail.value = newDetail
+          }
         }
       }
     })
@@ -61,7 +83,6 @@ function findVideo(data: WordDetail) {
 function refreshWordDetail(topicId: number) {
   console.log('refreshWordDetail.topicId=>', topicId)
   showDataDetail.value = false
-  videoUrl.value = ''
   getWordDetail(topicId)
     .then((data) => {
       console.log('getWordDetail', data)
@@ -115,7 +136,7 @@ provide('refreshWordDetail', refreshWordDetail)
       </tbody>
     </table>
     <!-- 单词详情 -->
-    <WordDetailComp v-if="showDataDetail && dataDetail" :data="dataDetail" :video-url="videoUrl" />
+    <WordDetailComp v-if="showDataDetail && dataDetail" :data="dataDetail" />
   </div>
 </template>
 

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, onMounted, ref, watch } from 'vue'
 import { ElMessage } from 'element-plus'
-import { intersection } from 'lodash-es'
+import { cloneDeep, intersection } from 'lodash-es'
 import WordDetailComp from '../../components/WordDetail.vue'
 import { useWordBook } from './hooks'
 import EventBus from '@/utils/eventBus'
@@ -204,9 +204,11 @@ function loadAndPlayAccent(data: MyWord) {
     createAudioAndPlay(audioBinaryData.slice(0, audioBinaryData.byteLength))
   }
 }
-const videoUrl = ref('')
-function findVideo(data: WordDetail) {
-  const interested = intersection(data.dict.exams, ['TOEFL', 'SAT', 'GMAT', 'GRE'])
+// 弹窗显示单词详情
+const showDataDetail = ref(false)
+const dataDetail = ref<WordDetail>()
+function findVideo(wordDetail: WordDetail) {
+  const interested = intersection(wordDetail.dict.exams, ['TOEFL', 'SAT', 'GMAT', 'GRE'])
   if (interested.length > 0) {
     // getWordVideo(data.dict.word_basic_info.topic_id, 621).then((res) => {
     //   console.log('getWordVideo', res)
@@ -214,7 +216,7 @@ function findVideo(data: WordDetail) {
     browser.runtime.sendMessage(undefined, {
       action: 'getWordVideo',
       args: {
-        topicId: data.dict.word_basic_info.topic_id,
+        topicId: wordDetail.dict.word_basic_info.topic_id,
       },
     }).then((res) => {
       console.log('getWordVideo', res)
@@ -222,15 +224,36 @@ function findVideo(data: WordDetail) {
         const data = res as ResponseData
         if (data.code === 1) {
           const video = data.data?.[0].xModeTopic.video
-          videoUrl.value = video ?? ''
+          if (wordDetail.dict.sentences?.length > 0) {
+            wordDetail.dict.sentences.unshift({
+              ...wordDetail.dict.sentences[0],
+              video_uri: video,
+            })
+          }
+          else {
+            wordDetail.dict.sentences.push({
+              audio_uri: '',
+              chn_mean_id: 0,
+              highlight_phrase: '',
+              id: 0,
+              img_uri: '',
+              sentence: '',
+              sentence_trans: '',
+              topic_id: wordDetail.dict.word_basic_info.topic_id,
+              video_uri: video,
+            })
+          }
+          // 判断当前的topicId是否没有比变化
+          if (dataDetail.value?.dict.word_basic_info.topic_id === wordDetail.dict.word_basic_info.topic_id) {
+            const newDetail = cloneDeep(wordDetail)
+            dataDetail.value = newDetail
+          }
         }
       }
     })
   }
 }
-// 弹窗显示单词详情
-const showDataDetail = ref(false)
-const dataDetail = ref<WordDetail>()
+
 function openDetail(topicId: number) {
   showDataDetail.value = false
   getWordDetail(topicId)
@@ -363,7 +386,7 @@ function onChange() {
   </div>
   <!-- 单词详情 -->
   <el-dialog v-model="showDataDetail" class="container" width="450px">
-    <WordDetailComp v-if="showDataDetail && dataDetail" :data="dataDetail" :video-url="videoUrl" />
+    <WordDetailComp v-if="showDataDetail && dataDetail" :data="dataDetail" />
   </el-dialog>
 </template>
 
