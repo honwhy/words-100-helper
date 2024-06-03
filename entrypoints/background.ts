@@ -1,5 +1,6 @@
 // background.ts
 import { actions } from '@/utils/actions'
+import tryImport from '@/utils/tryImport'
 
 function handleMessage(request: { action: string, args: any }, sender: any, _sendResponse: any) {
   console.log('request:', request, sender)
@@ -19,5 +20,6 @@ export default defineBackground({
   main() {
     console.log('service worker loaded')
     browser.runtime.onMessage.addListener(handleMessage)
+    tryImport()
   },
 })

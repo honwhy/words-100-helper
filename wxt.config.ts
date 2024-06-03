@@ -6,8 +6,8 @@ import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
 
 // See https://wxt.dev/api/config.html
 export default defineConfig({
-  manifest: () => ({
-    name: '新百词斩助手',
+  manifest: ({ mode }) => ({
+    name: mode === 'development' ? '新百词斩助手-dev' : '新百词斩助手',
     permissions: ['storage'],
     host_permissions: [
       'http://110.42.229.221/*',

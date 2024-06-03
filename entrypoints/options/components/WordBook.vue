@@ -114,8 +114,12 @@ async function loadWordbookTable(focus: boolean) {
 
     loading.value = false
   }
-  catch (e) {
+  catch (e: unknown) {
     console.error(`加载单词本 ${bookId} 内容错误`, e)
+    const error = e as Error
+    if (error.message.includes('请重新登录'))
+      EventBus.emit(Events.UNAUTHED)
+
     loading.value = false
   }
 }

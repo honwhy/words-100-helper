@@ -24,12 +24,6 @@ export default antfu(
        * By default uses Prettier
        */
       html: true,
-      /**
-       * Format Markdown files
-       * Supports Prettier and dprint
-       * By default uses Prettier
-       */
-      markdown: 'prettier',
     },
   },
 

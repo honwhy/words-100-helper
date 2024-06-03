@@ -1,8 +1,10 @@
 <script setup lang="ts">
-import { onMounted, reactive, ref } from 'vue'
+import { onMounted, onUnmounted, reactive, ref } from 'vue'
 import { ElMessage } from 'element-plus'
 import 'element-plus/es/components/message/style/css' // 引入 ElMessage 的样式
 import { debounce, isEmpty } from 'lodash-es'
+import IconQ from '~/assets/icon-qq.svg'
+import IconWechat from '~/assets/icon-wechat.svg'
 import EventBus from '@/utils/eventBus'
 import Events from '@/utils/events'
 import { getUserInfo, loginWithEmail } from '@/utils/api'
@@ -106,15 +108,37 @@ function loginByEmail() {
 const onLogin = debounce(() => {
   loginMode.value === 'phone' ? loginByPhone() : loginByEmail()
 })
+let countdown: number
+const sendButtonText = ref('发送验证码')
 const sendButtonDisabled = ref(false)
+function resetCountdown() {
+  if (countdown)
+    clearInterval(countdown)
+  sendButtonDisabled.value = false
+  sendButtonText.value = '发送验证码'
+}
+function startCountdown() {
+  let time = 60
+  sendButtonText.value = `${time}秒后重新发送`
+  countdown = setInterval(() => {
+    time--
+    if (time <= 0)
+      resetCountdown()
+    else
+      sendButtonText.value = `${time}秒后重新发送`
+  }, 1000) as unknown as number
+}
 const sendVerifyCode = debounce(() => {
   if (isEmpty(phoneForm.phone)) {
     ElMessage.warning('手机号码不能为空')
     return
   }
+  if (sendButtonDisabled.value)
+    return
   getVerifyCode(phoneForm.phone).then(() => {
     ElMessage.success('验证码发送成功')
     sendButtonDisabled.value = true
+    startCountdown()
   })
     .catch((e) => {
       console.error(`向 ${phoneForm.phone} 发送验证码失败`, e)
@@ -123,6 +147,9 @@ const sendVerifyCode = debounce(() => {
 })
 onMounted(() => {
   setup()
+})
+onUnmounted(() => {
+  resetCountdown()
 })
 </script>
 
@@ -145,20 +172,15 @@ onMounted(() => {
     </template>
     <template #footer>
       <div class="modal-footer">
-        <a id="wechatLoginLink" title="微信登录" href="#" @click.stop="myAlert">微信</a>
-        <a id="qqLoginLink" title="QQ登录" href="#" @click.stop="myAlert">QQ</a>
+        <span>其他登录:</span>
+        <a href="#" class="icon-wechat" @click.stop="myAlert">
+          <img :src="IconWechat">
+        </a>
+        <a href="#" class="icon-qq" @click.stop="myAlert">
+          <img :src="IconQ">
+        </a>
         <a id="phoneLoginLink" title="短信登录" href="#" @click.stop="togglePhoneMode">短信</a>
         <a id="emailLoginLink" title="邮箱登录" href="#" @click.stop="toggleEmailMode">邮箱</a>
-        <button
-          v-if="showSendButton"
-          id="sendVerifyButton"
-          type="button"
-          class="btn btn-secondary"
-          :disabled="sendButtonDisabled"
-          @click="sendVerifyCode"
-        >
-          发送验证码
-        </button>
         <button id="loginButton" type="button" class="btn btn-primary" @click="onLogin">
           登录
         </button>
@@ -171,7 +193,17 @@ onMounted(() => {
             <el-input v-model="phoneForm.phone" style="line-height: 1.5;height: 38px;" />
           </el-form-item>
           <el-form-item label="验证码：">
-            <el-input v-model="phoneForm.verifyCode" style="line-height: 1.5;height: 38px" />
+            <el-input v-model="phoneForm.verifyCode" style="line-height: 1.5;height: 38px">
+              <template #append>
+                <el-button
+                  :disabled="sendButtonDisabled"
+                  size="small"
+                  @click="sendVerifyCode"
+                >
+                  {{ sendButtonText }}
+                </el-button>
+              </template>
+            </el-input>
           </el-form-item>
         </el-form>
         <el-form v-if="loginMode === 'email'" id="emailLoginForm" :model="mailForm" label-width="85px" style="padding: 1rem">
@@ -222,5 +254,20 @@ onMounted(() => {
 }
 .modal-footer > * {
   margin: 0.25rem;
+}
+.modal-footer {
+  a {
+    img {
+      width: 32px;
+    }
+    &.icon-wechat {
+      background: #04d268;
+      border-radius: 50%;
+    }
+    &.icon-qq {
+      background: #12b7f5;
+      border-radius: 50%;
+    }
+  }
 }
 </style>

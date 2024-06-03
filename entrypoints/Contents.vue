@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue'
+import { computed, onMounted, onUnmounted, ref } from 'vue'
 import { URLPattern } from 'urlpattern-polyfill'
 import SelectionPopper from './SelectionPopper.vue'
 import type { Settings } from '@/utils/types'
@@ -73,13 +73,34 @@ function tryMatch() {
 const hideTranslate = computed(() => {
   return tryMatch()
 })
+const key = 'local:selected.translation'
+const show = ref(true)
+const unwatch = storage.watch<boolean>(key, (newVal, oldVal) => {
+  console.log('value changed:', { newVal, oldVal })
+  show.value = newVal ?? true
+})
+function setupKeyEventListener() {
+  document.addEventListener('keydown', async (event) => {
+    // 检查快捷键组合，例如Ctrl+Alt+B
+    if (event.ctrlKey && event.altKey && event.key === 'b') {
+      // 这里执行你的逻辑处理
+      console.log('Ctrl+Alt+B pressed')
+      // 开关处理
+      await storage.setItem(key, !show.value)
+    }
+  })
+}
 onMounted(() => {
   loadSetting()
+  setupKeyEventListener()
+})
+onUnmounted(() => {
+  unwatch()
 })
 </script>
 
 <template>
   <div id="__baicizhanHelper__lgelpdnoogahffdkigeeonhggglogabb">
-    <SelectionPopper v-if="triggerMode !== 'never' && !hideTranslate" :trigger-mode="triggerMode" :show-style="showStyle" />
+    <SelectionPopper v-if="triggerMode !== 'never' && !hideTranslate && show" :trigger-mode="triggerMode" :show-style="showStyle" />
   </div>
 </template>
