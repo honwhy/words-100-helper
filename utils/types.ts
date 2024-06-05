@@ -23,4 +23,5 @@ export interface Settings {
   similarWordsDisplay: boolean
   englishParaphraseDisplay: boolean
   blacklist: string
+  translationShortcut: string
 }

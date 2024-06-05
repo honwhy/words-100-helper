@@ -11,4 +11,5 @@ export const defaultWordDetailSettings = {
   similarWordsDisplay: false,
   englishParaphraseDisplay: false,
   blacklist: 'bing.com',
+  translationShortcut: 'Ctrl+Alt+B',
 } as const

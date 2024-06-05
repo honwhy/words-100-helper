@@ -73,20 +73,48 @@ function tryMatch() {
 const hideTranslate = computed(() => {
   return tryMatch()
 })
-const key = 'local:selected.translation'
+const settingKey = 'local:baicizhan-helper.wordDetail'
+const showKey = 'local:selected.translation'
 const show = ref(true)
-const unwatch = storage.watch<boolean>(key, (newVal, oldVal) => {
-  console.log('value changed:', { newVal, oldVal })
+const shortcut = ref('')
+
+onMounted(async () => {
+  const val = await storage.getItem<boolean>(showKey)
+  show.value = val ?? true
+})
+const unwatch = storage.watch<Settings>(settingKey, (newVal, oldVal) => {
+  console.log('settingKey value changed:', { newVal, oldVal })
+  shortcut.value = newVal?.translationShortcut ?? ''
+})
+const unwatch2 = storage.watch<boolean>(showKey, (newVal, oldVal) => {
+  console.log('showKey value changed:', { newVal, oldVal })
   show.value = newVal ?? true
+})
+const shortcutKeys = computed(() => {
+  const array = shortcut.value.split('+')
+  return {
+    ctrlKey: array.includes('Ctrl'),
+    altKey: array.includes('Alt'),
+    shiftKey: array.includes('Shift'),
+    key: array.filter(t => !['Ctrl', 'Alt', 'Shift'].includes(t))?.[0] ?? '',
+  }
 })
 function setupKeyEventListener() {
   document.addEventListener('keydown', async (event) => {
     // 检查快捷键组合，例如Ctrl+Alt+B
-    if (event.ctrlKey && event.altKey && event.key === 'b') {
-      // 这里执行你的逻辑处理
-      console.log('Ctrl+Alt+B pressed')
-      // 开关处理
-      await storage.setItem(key, !show.value)
+    console.log('key pressed, Ctrl, Alt, Shift, key', event.ctrlKey, event.altKey, event.shiftKey, event.key)
+    console.log('settings', shortcutKeys.value, shortcut.value)
+    if (event.ctrlKey === shortcutKeys.value.ctrlKey
+      && event.altKey === shortcutKeys.value.altKey
+      && event.shiftKey === shortcutKeys.value.shiftKey) {
+      // 全等
+      if (shortcutKeys.value.key) {
+        if (shortcutKeys.value.key.toLocaleLowerCase() === event.key.toLocaleLowerCase())
+          await storage.setItem(showKey, !show.value)
+      }
+      else {
+        await storage.setItem(showKey, !show.value)
+      }
     }
   })
 }
@@ -96,6 +124,7 @@ onMounted(() => {
 })
 onUnmounted(() => {
   unwatch()
+  unwatch2()
 })
 </script>
 

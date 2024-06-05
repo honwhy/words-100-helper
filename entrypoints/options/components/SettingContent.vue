@@ -113,6 +113,20 @@ function save() {
   storageModule.set('wordDetail', cloneDeep(settings.value))
   ElMessage.success('保存成功')
 }
+function handleShortcut(event: KeyboardEvent) {
+  const { key, ctrlKey, altKey, shiftKey } = event // 获取按键信息
+  let shortcut = ''
+
+  // 根据按键修饰符构建快捷键字符串
+  if (ctrlKey)
+    shortcut += 'Ctrl+'
+  if (altKey)
+    shortcut += 'Alt+'
+  if (shiftKey)
+    shortcut += 'Shift+'
+  shortcut += key.toUpperCase()
+  settings.value.translationShortcut = shortcut
+}
 onMounted(() => {
   setup()
 })
@@ -263,6 +277,12 @@ onMounted(() => {
                 </div>
                 <div class="form-check" style="padding-left: 0;">
                   <p><kbd style="margin-right: 4px;">Ctrl+Shift+S</kbd>收藏/取消收藏单词（仅搜索场景）</p>
+                </div>
+                <div class="form-check" style="padding-left: 0;">
+                  <p @keydown.prevent="handleShortcut">
+                    <el-input v-model="settings.translationShortcut" style="width: 200px" readonly />
+                    页面选词开关快捷键
+                  </p>
                 </div>
               </div>
             </div>
