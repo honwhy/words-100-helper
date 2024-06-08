@@ -10,6 +10,6 @@ export const defaultWordDetailSettings = {
   antonymsDisplay: false,
   similarWordsDisplay: false,
   englishParaphraseDisplay: false,
-  blacklist: 'bing.com',
+  blacklist: '*.bing.com',
   translationShortcut: 'Ctrl+Alt+B',
 } as const

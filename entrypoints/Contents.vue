@@ -80,12 +80,14 @@ const shortcut = ref('')
 
 onMounted(async () => {
   const val = await storage.getItem<Settings>(settingKey)
-  shortcut.value = val?.translationShortcut ?? ''
+  shortcut.value = val?.translationShortcut ?? 'Ctrl+Alt+B'
   const val2 = await storage.getItem<boolean>(showKey)
   show.value = val2 ?? true
 })
 const unwatch = storage.watch<Settings>(settingKey, (newVal, oldVal) => {
   console.log('settingKey value changed:', { newVal, oldVal })
+  if (newVal)
+    settings.value = newVal
   shortcut.value = newVal?.translationShortcut ?? ''
 })
 const unwatch2 = storage.watch<boolean>(showKey, (newVal, oldVal) => {
