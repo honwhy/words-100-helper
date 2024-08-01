@@ -21,5 +21,12 @@ export default defineBackground({
     console.log('service worker loaded')
     browser.runtime.onMessage.addListener(handleMessage)
     tryImport()
+    // 插件首次安装或更新时触发
+    browser.runtime.onInstalled.addListener((detail) => {
+      if (detail.reason === 'install')
+        browser.tabs.create({ url: 'https://100-words.pages.dev/welcome' })
+      else if (detail.reason === 'update')
+        browser.runtime.openOptionsPage()
+    })
   },
 })
