@@ -7,7 +7,7 @@
 [![English badge](https://img.shields.io/badge/%E8%8B%B1%E6%96%87-English-blue)](./README.md)
 [![简体中文 badge](https://img.shields.io/badge/%E7%AE%80%E4%BD%93%E4%B8%AD%E6%96%87-Simplified%20Chinese-blue)](./README-zh.md)
 
-<a href="https://afdian.net/a/honwhy" target="_blank"><img src="https://pic1.afdiancdn.com/static/img/welcome/button-sponsorme.png" alt="在为发电支持我" style="height: 40px !important;width: 145px !important;" ></a>
+<a href="https://honwhy.wang/donate" target="_blank"><img src="https://pic1.afdiancdn.com/static/img/welcome/button-sponsorme.png" alt="在为发电支持我" style="height: 40px !important;width: 145px !important;" ></a>
 
 # Words-100-Helper
 
