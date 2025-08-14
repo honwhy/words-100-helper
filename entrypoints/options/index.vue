@@ -96,11 +96,11 @@ onMounted(() => {
   </div>
   <div v-if="activeName === 'comments'" class="html-container">
     <div style="padding-left: 8px;">
-      <a target="_blank" href="http://110.42.229.221:8080/comments">查看更多</a>
+      <a target="_blank" href="http://www.baicizhan-helper.cn/comments">查看更多</a>
     </div>
     <iframe
       id="commentIframe"
-      src="http://110.42.229.221:8080/comments"
+      src="http://www.baicizhan-helper.cn/comments"
       frameborder="0"
       class="comment-iframe"
       scrolling="no"

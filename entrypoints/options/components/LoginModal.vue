@@ -28,7 +28,7 @@ const dialogVisible = ref(false)
 function setup() {
   EventBus.on(Events.UNAUTHED, () => {
     console.log('LoginModal got UNAUTHED')
-    storageModule.remove(['accessToken'])
+    // storageModule.remove(['accessToken'])
     EventBus.emit('nickname', '游客用户')
     dialogVisible.value = true
   })
@@ -65,14 +65,14 @@ const mailForm = reactive({
   email: '',
   password: '',
 })
-interface LoginData {
-  access_token: string
-}
+// interface LoginData {
+//   access_token: string
+// }
 function loginSuccessful(res: unknown) {
-  const data = res as LoginData
-  console.log('loginSuccessful', data)
+  // const data = res as LoginData
+  console.log('loginSuccessful', res)
   // access_token 写入 storage
-  storageModule.set('accessToken', data.access_token)
+  storageModule.set('accessToken', res as string)
   // 禁止点击
   // $('#loginButton').off('click').prop('disabled', true)
   // 登录模态框隐藏

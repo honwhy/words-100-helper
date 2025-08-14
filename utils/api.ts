@@ -25,16 +25,26 @@ function sendRequest(options: Options) {
       headers: options.headers,
     })
       .then(response => response.json())
-      .then(responseJson => responseJson.code === 200
-        ? resolve(responseJson.data)
-        : reject(new Error(responseJson.message)),
+      .then((responseJson) => {
+        // 响应未登录时，清除本地 token
+        if (responseJson.code === 401)
+          storageModule.remove(['accessToken'])
+
+        // 处理无权限异常，弹出提示
+        if (responseJson.code === 403)
+          return reject(new Error(responseJson.message))
+
+        return responseJson.code === 200
+          ? resolve(responseJson.data)
+          : reject(new Error(responseJson.message))
+      },
       )
       .catch(e => reject(e))
   })
 }
 export function searchWord(word: string) {
   return loadRequestOptions().then(([host, port, accessToken]) => {
-    const url = `http://${host}:${port}/search/word/${word}`
+    const url = `http://${host}/search/word/${word}`
 
     return sendRequest({
       url,
@@ -47,7 +57,7 @@ export function searchWord(word: string) {
 export function getWordDetail(topicId: number) {
   console.log('getWordDetail->topicId', topicId)
   return loadRequestOptions().then(([host, port, accessToken]) => {
-    const url = `http://${host}:${port}/word/${topicId}`
+    const url = `http://${host}/word/${topicId}`
 
     return sendRequest({
       url,
@@ -88,7 +98,7 @@ export function getWordInfo(word: string) {
 
 export function getUserInfo() {
   return loadRequestOptions().then(([host, port, accessToken]) => {
-    const url = `http://${host}:${port}/userInfo`
+    const url = `http://${host}/userInfo`
 
     return sendRequest({
       url,
@@ -100,7 +110,7 @@ export function getUserInfo() {
 
 export function loginWithEmail(email: string, password: string) {
   return loadRequestOptions().then(([host, port]) => {
-    const url = `http://${host}:${port}/loginWithEmail?email=${encodeURIComponent(email)}&password=${password}`
+    const url = `http://${host}/loginWithEmail?email=${encodeURIComponent(email)}&password=${password}`
 
     return sendRequest({
       url,
@@ -112,7 +122,7 @@ export function loginWithEmail(email: string, password: string) {
 
 export function loginWithPhone(phoneNum: string, verifyCode: string) {
   return loadRequestOptions().then(([host, port]) => {
-    const url = `http://${host}:${port}/login/${phoneNum}/${verifyCode}`
+    const url = `http://${host}/login/${phoneNum}/${verifyCode}`
 
     return sendRequest({
       url,
@@ -124,7 +134,7 @@ export function loginWithPhone(phoneNum: string, verifyCode: string) {
 
 export function getVerifyCode(phoneNum: string) {
   return loadRequestOptions().then(([host, port]) => {
-    const url = `http://${host}:${port}/login/sendSmsVerifyCode/${phoneNum}`
+    const url = `http://${host}/login/sendSmsVerifyCode/${phoneNum}`
 
     return sendRequest({
       url,
@@ -136,7 +146,7 @@ export function getVerifyCode(phoneNum: string) {
 
 export function getBookWords(bookId: number) {
   return loadRequestOptions().then(([host, port, accessToken]) => {
-    const url = `http://${host}:${port}/book/${bookId}/words`
+    const url = `http://${host}/book/${bookId}/words`
 
     return sendRequest({
       url,
@@ -193,7 +203,7 @@ export function collectWord(word: Dict) {
     getWordbookId(),
   ])
     .then(([[host, port, accessToken], bookId]) => {
-      const url = `http://${host}:${port}/book/${bookId}/word/${topicId}`
+      const url = `http://${host}/book/${bookId}/word/${topicId}`
 
       return sendRequest({
         url,
@@ -209,7 +219,7 @@ export function cancelCollectWordById(topicId: number) {
     getWordbookId(),
   ])
     .then(([[host, port, accessToken], bookId]) => {
-      const url = `http://${host}:${port}/book/${bookId}/word/${topicId}`
+      const url = `http://${host}/book/${bookId}/word/${topicId}`
 
       return sendRequest({
         url,
@@ -227,7 +237,7 @@ export function cancelCollectWord(word: Dict) {
 
 export function getBooks() {
   return loadRequestOptions().then(([host, port, accessToken]) => {
-    const url = `http://${host}:${port}/books`
+    const url = `http://${host}/books`
 
     return sendRequest({
       url,
@@ -240,7 +250,7 @@ export function getBooks() {
 export function translate(phrase: string) {
   return loadRequestOptions().then(([host, port, accessToken]) => {
     const encodePrharse = encodeURIComponent(phrase)
-    const url = `http://${host}:${port}/translate?text=${encodePrharse}`
+    const url = `http://${host}/translate?text=${encodePrharse}`
 
     return sendRequest({
       url,
